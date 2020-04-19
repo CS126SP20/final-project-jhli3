@@ -4,7 +4,7 @@
 #include <cinder/app/RendererGl.h>
 
 #include "my_app.h"
-
+#include "mylibrary/prettyprint.hpp"
 
 using cinder::app::App;
 using cinder::app::RendererGl;
