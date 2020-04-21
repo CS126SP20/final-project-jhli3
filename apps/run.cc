@@ -28,3 +28,4 @@ void SetUp(App::Settings* settings) {
 CINDER_APP(myapp::MyApp,
            RendererGl(RendererGl::Options().msaa(myapp::kSamples)),
            myapp::SetUp)
+

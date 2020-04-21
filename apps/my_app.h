@@ -15,6 +15,11 @@ class MyApp : public cinder::app::App {
   void update() override;
   void draw() override;
   void keyDown(cinder::app::KeyEvent) override;
+
+ private:
+  void PrintText(const std::string& text, const cinder::Color& color, const cinder::ivec2& size,
+                 const cinder::vec2& loc);
+
 };
 
 }  // namespace myapp
