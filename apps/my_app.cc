@@ -29,15 +29,7 @@ void MyApp::setup() { }
 void MyApp::update() { }
 
 void MyApp::draw() {
-  cinder::gl::enableAlphaBlending();
-
-  const Color color = Color::white();
-  const cinder::vec2 center = getWindowCenter();
-  const cinder::ivec2 size = {500, 50};
-
-  std::string message = fmt::format("The answer is {}", 42);
-
-  PrintText(message, color, size, center);
+  PrintSampleTest();
 }
 
 void MyApp::keyDown(KeyEvent event) { }
@@ -60,5 +52,19 @@ void MyApp::PrintText(const string& text, const cinder::Color& color, const cind
   const auto texture = cinder::gl::Texture::create(surface);
   cinder::gl::draw(texture, locp);
 }
+
+// Just a method to test the formatting function of string with fmt
+void MyApp::PrintSampleTest() {
+  // Setting some variable to print the text
+  const Color color = Color::white();
+  const cinder::vec2 center = getWindowCenter();
+  const cinder::ivec2 size = {500, 50};
+
+  // sample text testing fmt
+  std::string message = fmt::format("The answer is {}", 42);
+
+  PrintText(message, color, size, center);
+}
+
 
 }  // namespace myapp

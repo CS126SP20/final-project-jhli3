@@ -970,7 +970,6 @@ void fallback_format(Double d, buffer<char>& buf, int& exp10) {
   // Shift numerator and denominator by an extra bit or two (if lower boundary
   // is closer) to make lower and upper integers. This eliminates multiplication
   // by 2 during later computations.
-  // TODO: handle float
   int shift = value.assign(d) ? 2 : 1;
   uint64_t significand = value.f << shift;
   if (value.e >= 0) {

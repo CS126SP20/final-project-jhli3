@@ -1,0 +1,37 @@
+//
+// Created by Jennifer Li on 4/21/20.
+//
+
+#ifndef FINALPROJECT_PARSER_H
+#define FINALPROJECT_PARSER_H
+
+#include <string>
+#include <vector>
+
+#include "puzzle.h"
+
+namespace wordsearch {
+class Parser {
+ private:
+  // Checks that file exists
+  bool DoesFileExist(std::string& file_name);
+  // Splits the text line by line and adds to a vector
+  // Vector should only have 3 elements: header, puzzle, words
+  void SplitTextLines(std::string& file_name, std::vector<std::string>& lines);
+  // Checks if file is valid
+  // A file is valid if it has a header, has a 15 x 15 puzzle,
+  // and max 30 words (only 4 words can have the max length of 15)
+  bool IsFileValid(std::vector<std::string>& lines);
+  // Checks that puzzles are of valid format
+  // everything is of correct length and amount
+  // all characters are letters, capitalization does not matter
+  // words are separated by spaces
+  bool IsPuzzleValid(std::string& wordsearch, std::string&& words);
+
+ public:
+  // Runs the parsing of the file
+  void ParseFile(std::string& file_name);
+};
+} // namespace wordsearch
+
+#endif  // FINALPROJECT_PARSER_H

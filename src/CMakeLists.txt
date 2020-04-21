@@ -13,6 +13,14 @@ file(GLOB SOURCE_LIST CONFIGURE_DEPENDS
         "${FinalProject_SOURCE_DIR}/src/*.cc"
         "${FinalProject_SOURCE_DIR}/src/*.cpp")
 
+# Make an automatic library - will be static or dynamic based on user setting
+add_library(wordsearch ${SOURCE_LIST} ${HEADER_LIST} ../include/wordsearch/puzzle.h puzzle.cc ../include/wordsearch/parser.h parser.cc)
+
+# We need this directory, and users of our library will need it too
+target_include_directories(wordsearch PUBLIC ../include)
+
+# All users of this library will need at least C++11
+target_compile_features(wordsearch PUBLIC cxx_std_11)
 
 ci_make_library(
         LIBRARY_NAME mylibrary
