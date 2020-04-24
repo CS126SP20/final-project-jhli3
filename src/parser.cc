@@ -6,7 +6,7 @@
 
 namespace wordsearch {
 // constant header
-std::string const kHeader = "#spr1.0";
+std::string const kHeader = "#spf1.0";
 int const kFileSize = 3;
 int const kCharacterSize = 1;
 
@@ -30,44 +30,39 @@ void Parser::ParseFile(std::string& file_name) {
 // code below derived in part from:
 // https://stackoverflow.com/questions/1647557/ifstream-how-to-tell-if-specified-file-doesnt-exist
 bool Parser::DoesFileExist(std::string& file_name) {
-    std::ifstream my_file(file_name.c_str());
+    std::ifstream my_file;
+    my_file.open(file_name);
     // Check to make sure that file opens
-    if (my_file) {
-      return true;
-    } else {
-      // If image file doesn't properly open
+    if (my_file.fail()) {
       std::cout << "Failed to open file " << file_name << std::endl;
       return false;
+    } else {
+      std::cout << "Opened file " << file_name << std::endl;
+      return true;
     }
-//  std::ifstream file_stream(file_name.c_str());
-//  if (file_stream.fail()) {
-//    std::cout << "This file does not exist";
-//    return false;
-//  }
-//  return true;
 }
 
 // Splits the text line by line and adds to a vector
 // Vector should only have 3 elements: header, puzzle, words
 void Parser::SplitTextLines(std::string& file_name, std::vector<std::string>& lines) {
-  std::ifstream my_file(file_name.c_str());
-  // Check that stream is still good
-  if (my_file) {
-    std::string line;
+  std::ifstream my_file;
+  my_file.open(file_name);
+  std::string line;
     while (getline(my_file, line)){ // while there are still lines in file
-      lines.push_back(line); // add line to vector
-      line.clear(); // clear the line
-    }
+    lines.push_back(line); // add line to vector
+    line.clear(); // clear the line
   }
-  std::cout << "There's something wrong with the stream";
+  //std::cout << "There's something wrong with the stream";
 }
 // Checks if file is valid
 // A file is valid if it has a header, has a 15 x 15 puzzle,
 // and max 30 words
 bool Parser::IsFileValid(std::vector<std::string>& lines) {
   if (lines.size() != kFileSize) { // files contains the wrong contents
+    std::cout << "Wrong number of lines";
     return false;
   } else if (lines.at(0).compare(kHeader) != 0) { // files header does not match
+    std::cout << "Wrong header";
     return false;
   } else if (!IsPuzzleValid(lines.at(1), lines.at(2))) {
     // is the puzzle included a valid puzzle
@@ -83,8 +78,10 @@ bool Parser::IsFileValid(std::vector<std::string>& lines) {
 // https://www.geeksforgeeks.org/split-a-sentence-into-words-in-cpp/
 bool Parser::IsPuzzleValid(std::string& wordsearch, std::string& words) {
   if (wordsearch.size() != kPuzzleSize * kPuzzleSize) { // puzzle of wrong size
+    std::cout << "Wrong puzzle size of " << wordsearch.size();
     return false;
   } else if (!IsAllLetters(wordsearch)) { // checks that puzzle is only letters
+    std::cout << "Puzzle isn't all letters";
     return false;
   }
   // split words list into individual words
@@ -103,6 +100,7 @@ bool Parser::IsPuzzleValid(std::string& wordsearch, std::string& words) {
     token = std::strtok(NULL, " ");
   }
   if (!IsWordListValid(words_list)) {
+    std::cout << "A word isn't only letters";
     return false;
   }
   return true;
@@ -113,7 +111,7 @@ bool Parser::IsAllLetters(std::string& line) {
   for (char c : line) {
     // if the character isn't in the upper case range (65 - 90) or the lower
     // case range (97 - 122)
-    if (!(c > 64 && c < 91) || !(c > 96 && c < 123)) {
+    if (!(c >= 65 && c <= 90) && !(c >= 97 && c <= 122)) {
       return false;
     }
   }

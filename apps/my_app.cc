@@ -74,7 +74,7 @@ void MyApp::PrintSampleTest() {
 
 void MyApp::TestParser() {
   wordsearch::Parser parser;
-  std::string file_name = "wordsearch.spf";
+  std::string file_name = "/Users/white/Cinder/my-projects/final-project-jhli3/data/wordsearch.spf";
   parser.ParseFile(file_name);
 }
 
