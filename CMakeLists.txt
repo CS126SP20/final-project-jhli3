@@ -85,5 +85,3 @@ if(NOT catch2_POPULATED)
     add_library(catch2 INTERFACE)
     target_include_directories(catch2 INTERFACE ${catch2_SOURCE_DIR}/single_include)
 endif()
-
-# Add more CMake libraries here ...

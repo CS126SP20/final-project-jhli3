@@ -7,12 +7,17 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
+#include <iostream>
 
 #include "puzzle.h"
 
 namespace wordsearch {
 class Parser {
  private:
+  // board size
+  int const kPuzzleSize = 15;
+
   // Checks that file exists
   bool DoesFileExist(std::string& file_name);
   // Splits the text line by line and adds to a vector
@@ -26,12 +31,16 @@ class Parser {
   // everything is of correct length and amount
   // all characters are letters, capitalization does not matter
   // words are separated by spaces
-  bool IsPuzzleValid(std::string& wordsearch, std::string&& words);
+  bool IsPuzzleValid(std::string& wordsearch, std::string& words);
+  // Checks that a string is only filled with characters of the alphabet
+  bool IsAllLetters(std::string& line);
+  // Checks that word list is valid
+  bool IsWordListValid(std::vector<std::string> words);
 
  public:
   // Runs the parsing of the file
   void ParseFile(std::string& file_name);
 };
-} // namespace wordsearch
+}  // namespace wordsearch
 
 #endif  // FINALPROJECT_PARSER_H
