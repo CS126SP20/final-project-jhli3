@@ -10,4 +10,7 @@
 
 ###### 4/23/2020
 - Wrote methods in parser.cc to read in spf text file
+
+###### 4/26/2020
+- Created trie template.
 ---
