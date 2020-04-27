@@ -4,6 +4,8 @@
 
 #include <wordsearch/parser.h>
 
+using std::cout;
+
 namespace wordsearch {
 // constant header
 std::string const kHeader = "#spf1.0";
@@ -20,9 +22,10 @@ void Parser::ParseFile(std::string& file_name) {
     // Using this vector check that file is holding valid contents
     if (IsFileValid(file_lines)) {
       // create a puzzle object
-      std::cout << "Puzzle created";
+        Puzzle(file_lines.at(1), file_lines.at(2));
+        cout << "Puzzle created";
     } else {
-      std::cout << "This is an invalid file.";
+      cout << "This is an invalid file.";
     }
   }
 }
@@ -34,10 +37,10 @@ bool Parser::DoesFileExist(std::string& file_name) {
     my_file.open(file_name);
     // Check to make sure that file opens
     if (my_file.fail()) {
-      std::cout << "Failed to open file " << file_name << std::endl;
+      cout << "Failed to open file " << file_name << std::endl;
       return false;
     } else {
-      std::cout << "Opened file " << file_name << std::endl;
+      cout << "Opened file " << file_name << std::endl;
       return true;
     }
 }
@@ -59,10 +62,10 @@ void Parser::SplitTextLines(std::string& file_name, std::vector<std::string>& li
 // and max 30 words
 bool Parser::IsFileValid(std::vector<std::string>& lines) {
   if (lines.size() != kFileSize) { // files contains the wrong contents
-    std::cout << "Wrong number of lines";
+    cout << "Wrong number of lines";
     return false;
   } else if (lines.at(0).compare(kHeader) != 0) { // files header does not match
-    std::cout << "Wrong header";
+    cout << "Wrong header";
     return false;
   } else if (!IsPuzzleValid(lines.at(1), lines.at(2))) {
     // is the puzzle included a valid puzzle
@@ -78,10 +81,10 @@ bool Parser::IsFileValid(std::vector<std::string>& lines) {
 // https://www.geeksforgeeks.org/split-a-sentence-into-words-in-cpp/
 bool Parser::IsPuzzleValid(std::string& wordsearch, std::string& words) {
   if (wordsearch.size() != kPuzzleSize * kPuzzleSize) { // puzzle of wrong size
-    std::cout << "Wrong puzzle size of " << wordsearch.size();
+    cout << "Wrong puzzle size of " << wordsearch.size();
     return false;
   } else if (!IsAllLetters(wordsearch)) { // checks that puzzle is only letters
-    std::cout << "Puzzle isn't all letters";
+    cout << "Puzzle isn't all letters";
     return false;
   }
   // split words list into individual words
@@ -99,8 +102,9 @@ bool Parser::IsPuzzleValid(std::string& wordsearch, std::string& words) {
     words_list.push_back(token);
     token = std::strtok(NULL, " ");
   }
+  cout << "Word list size " << words_list.size() << std::endl;
   if (!IsWordListValid(words_list)) {
-    std::cout << "A word isn't only letters";
+    cout << "A word isn't only letters";
     return false;
   }
   return true;
@@ -121,16 +125,41 @@ bool Parser::IsAllLetters(std::string& line) {
 bool Parser::IsWordListValid(std::vector<std::string> words) {
   // if there are no words or too many words
   if (words.size() == 0 || words.size() > 30) {
+    cout << "Invalid number of words";
     return false;
   }
+  // Goes through each word in word list
   for (std::string word : words) {
-    if (!IsAllLetters(word)) {  // checks that each word is made of letters
-      return false;
-    } else if (word.size() == kCharacterSize || word.size() > kPuzzleSize) {
+    if (word.size() == kCharacterSize || word.size() > kPuzzleSize) {
       // word cannot be 1 letter or more than puzzle size
+      cout << "Word of improper length";
+      return false;
+    } else if (!IsAllLetters(word)) {  // checks that each word is made of letters
+      cout << "Word with invalid character";
       return false;
     }
-    return true;
+  }
+  return true;
+}
+
+// ------------- Methods for testing -------------
+// Runs the parsing of the file
+// Code derived from:
+// https://stackoverflow.com/questions/40297782/c-unit-testing-check-output-is-correct
+void Parser::ParseFileTester(std::string& file_name, std::ostream& cout) {
+  // Checks that file exists
+  if (DoesFileExist(file_name)) { // if it doesn't exist a message will be print
+    std::vector<std::string> file_lines; // create vector holding lines in file
+    SplitTextLines(file_name, file_lines); // split lines and add to vector
+
+    // Using this vector check that file is holding valid contents
+    if (IsFileValid(file_lines)) {
+      // create a puzzle object
+      Puzzle(file_lines.at(1), file_lines.at(2));
+      cout << "Puzzle created";
+    } else {
+      cout << "This is an invalid file";
+    }
   }
 }
 } // namespace wordsearch

@@ -40,6 +40,9 @@ class Parser {
  public:
   // Runs the parsing of the file
   void ParseFile(std::string& file_name);
+  // For testing purposes
+  // Runs the parsing of the file
+  void ParseFileTester(std::string& file_name, std::ostream& cout = std::cout);
 };
 }  // namespace wordsearch
 
