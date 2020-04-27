@@ -107,46 +107,66 @@ TEST_CASE("Parser Test", "[parser]") {
     parser.ParseFileTester(file_name, ss);
     REQUIRE(ss.str() == "This is an invalid file");
    }
+
+  SECTION("File does not exist") {
+    std::string file_name = "/Users/white/Cinder/my-projects/final-project-jhli3/tests/data/example.spf";
+    parser.ParseFileTester(file_name, ss);
+    REQUIRE(ss.str() == "This is an invalid file");
+  }
 }
 
-//TEST_CASE("Trie test", "[random]") {
-//  Trie<char> trie;
-//
-//  trie.add({'a', 'p', 'p', 'l', 'e', 's'});
-//  trie.add({'a', 'p', 'r', 'o', 'n'});
-//  trie.add({'a', 'b', 'l', 'e'});
-//  trie.add({'c', 'a', 'p'});
-//  trie.add({'c', 'a', 'p', 'p', 'e', 'd'});
-//
-//  REQUIRE(trie.check({'a', 'p', 'p'}) == true);
-//  REQUIRE(trie.check({'a', 'p', 'p', 'l', 'e'}) == true);
-//  REQUIRE(trie.check({'a', 'b'}) == true);
-//  REQUIRE(trie.check({'c', 'a', 'p', 'p', 'e'}) == true);
-//
-//  REQUIRE(trie.check({'p', 'e', 'd'}) == false);
-//}
-//
-//TEST_CASE("CreateTrie test", "[random]") {
-//  Trie<char> trie;
-//  std::string words = "APPLES APRON ABLE CAP CAPPED";
-//
-//  wordsearch::Puzzle::CreateTrie(words, trie);
-//
-//  //REQUIRE(trie.check({'a', 'p', 'p'}) == true);
-//  REQUIRE(trie.check({'a', 'p', 'p', 'l', 'e', 's'}) == true);
-//  REQUIRE(trie.check({'a', 'b'}) == true);
-//  REQUIRE(trie.check({'c', 'a', 'p', 'p', 'e'}) == true);
-//
-//  REQUIRE(trie.check({'p', 'e', 'd'}) == false);
-//}
-//
-//TEST_CASE("CreateWordListVector test", "[random]") {
-//  std::string words = "APPLES APRON";
-//  std::vector<std::string> words_list;
-//
-//  wordsearch::Puzzle::CreateWordListVector(words, words_list);
-//  std::cout << words_list.size();
-//  REQUIRE(words_list.size() == 2);
-//  REQUIRE(words_list.at(0) == "APPLES");
-//  REQUIRE(words_list.at(1) == "APRON");
-//}
+TEST_CASE("CreateWordListVector test", "[puzzle]") {
+  std::string words = "APPLES APRON";
+  std::vector<std::string> words_list;
+
+  wordsearch::Puzzle::CreateWordListVector(words, words_list);
+  REQUIRE(words_list.size() == 2);
+  REQUIRE(words_list.at(0) == "APPLES");
+  REQUIRE(words_list.at(1) == "APRON");
+}
+
+// This test is help figure out how the trie template downloaded worked
+TEST_CASE("Trie test", "[trie]") {
+  Trie<char> trie; // Create trie of chars
+
+  // add words to the trie
+  trie.add({'a', 'p', 'p', 'l', 'e', 's'});
+  trie.add({'a', 'p', 'r', 'o', 'n'});
+  trie.add({'a', 'b', 'l', 'e'});
+  trie.add({'c', 'a', 'p'});
+  trie.add({'c', 'a', 'p', 'p', 'e', 'd'});
+
+  // check/search for certain words in the trie
+  REQUIRE(trie.check({'a', 'p', 'p'}) == true);
+  REQUIRE(trie.check({'a', 'p', 'p', 'l', 'e'}) == true);
+  REQUIRE(trie.check({'a', 'b'}) == true);
+  REQUIRE(trie.check({'c', 'a', 'p', 'p', 'e'}) == true);
+
+  // While this combination of symbols exists within the trie, it is not
+  // a word that can be retrieved from the trie hierarchy
+  REQUIRE(trie.check({'p', 'e', 'd'}) == false);
+}
+
+// Test my own CreateTrie method
+TEST_CASE("CreateTrie test", "[puzzle], [trie]") {
+  Trie<char> trie; // Create trie of chars
+  std::string words = "apples apron able cap capped"; // Create string of words
+
+  wordsearch::Puzzle::CreateTrie(words, trie); // Fill trie with words from string
+
+  // Check that these words exist within the trie
+  REQUIRE(trie.check({'a', 'p', 'p'}) == true); // implicitly formed word
+  REQUIRE(trie.check({'a', 'p', 'p', 'l', 'e', 's'}) == true); // explicitly formed word
+  REQUIRE(trie.check({'a', 'b'}) == true); // implicitly formed word
+  REQUIRE(trie.check({'c', 'a', 'p', 'p', 'e'}) == true); // explicitly formed word
+
+  // exists in the interior structure but not it's own independent word
+  REQUIRE(trie.check({'p', 'e', 'd'}) == false);
+}
+
+TEST_CASE("CreatePuzzle test", "[puzzle]") {
+  char grid [kPuzzleSize][kPuzzleSize];
+  std::string puzzle_string;
+  wordsearch::Puzzle::CreatePuzzleGrid(puzzle_string, grid);
+
+}

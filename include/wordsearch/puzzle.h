@@ -32,13 +32,13 @@ class Puzzle {
   // Solve the puzzle
   void Solve();
 
-  // Methods to help with testing
+  // ------------ Methods to help with testing ------------
   // Fill 2d grid with letters of the puzzle
   static void CreatePuzzleGrid(std::string& puzzle, char grid[kPuzzleSize][kPuzzleSize]);
   // Creates trie of words to be found in puzzle
-  static void CreateTrie(std::string& words_list, Trie<char> words_trie);
+  static void CreateTrie(std::string& words_list, Trie<char>& words_trie);
   // Creates vectors of word list
-  static void CreateWordListVector(std::string& word_list, std::vector<std::string> words_vec);
+  static void CreateWordListVector(std::string& word_list, std::vector<std::string>& words_vec);
 };
 } // namespace wordsearch
 #endif  // FINALPROJECT_PUZZLE_H

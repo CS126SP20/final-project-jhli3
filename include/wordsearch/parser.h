@@ -35,7 +35,7 @@ class Parser {
   // Checks that a string is only filled with characters of the alphabet
   bool IsAllLetters(std::string& line);
   // Checks that word list is valid
-  bool IsWordListValid(std::vector<std::string> words);
+  bool IsWordListValid(std::vector<std::string>& words);
 
  public:
   // Runs the parsing of the file

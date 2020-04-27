@@ -102,8 +102,8 @@ bool Parser::IsPuzzleValid(std::string& wordsearch, std::string& words) {
     words_list.push_back(token);
     token = std::strtok(NULL, " ");
   }
-  cout << "Word list size " << words_list.size() << std::endl;
-  if (!IsWordListValid(words_list)) {
+  //cout << "Word list size " << words_list.size() << std::endl;
+  if (!IsWordListValid(words_list)) { // passes word list to check for validity
     cout << "A word isn't only letters";
     return false;
   }
@@ -122,7 +122,7 @@ bool Parser::IsAllLetters(std::string& line) {
   return true;
 }
 
-bool Parser::IsWordListValid(std::vector<std::string> words) {
+bool Parser::IsWordListValid(std::vector<std::string>& words) {
   // if there are no words or too many words
   if (words.size() == 0 || words.size() > 30) {
     cout << "Invalid number of words";

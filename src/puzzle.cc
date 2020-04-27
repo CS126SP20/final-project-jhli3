@@ -52,8 +52,7 @@ void Puzzle::CreateTrie(std::string& words) {
   words_trie_ = temp;
 }
 
-void Puzzle::CreateWordListVector(std::string& words, std::vector<std::string> words_list) {
-  // split words list into individual words
+void Puzzle::CreateWordListVector(std::string& words, std::vector<std::string>& words_list) {
   // convert list of words into a char array
   char char_of_words[words.size() + 1];
   strcpy(char_of_words, words.c_str());
@@ -82,7 +81,7 @@ void Puzzle::CreatePuzzleGrid(std::string& puzzle, char grid[kPuzzleSize][kPuzzl
   }
 }
 // Creates trie of words to be found in puzzle
-void Puzzle::CreateTrie(std::string& words, Trie<char> words_trie) {
+void Puzzle::CreateTrie(std::string& words, Trie<char>& words_trie) {
   std::vector<std::string> words_list;
   CreateWordListVector(words, words_list);
 
