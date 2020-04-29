@@ -15,5 +15,13 @@
 - Created trie template
 
 ###### 4/27/2020
-- Wrote parser class tests for various file tyles
+- Wrote parser class tests for various file styles
+
+###### 4/28/2020
+- Wrote trie tests to figure out how the trie structure worked
+- Wrote tests for Puzzle helper methods
+
+###### 4/29/2020
+- Read about backtracking specifically for word puzzles
+- Began planning algorithm for solving word search
 ---
