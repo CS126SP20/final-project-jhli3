@@ -13,11 +13,6 @@ Puzzle::Puzzle(std::string& puzzle, std::string& words) {
   CreateTrie(words);
 }
 
-// Solve the puzzle
-void Puzzle::Solve() {
-
-}
-
 // Fill 2d grid with letters of the puzzle
 void Puzzle::CreatePuzzleGrid(std::string& puzzle) {
   // Keeps track of the character in the puzzle
@@ -139,4 +134,33 @@ void Puzzle::CreateTrie(std::string& words, Trie<char>& words_trie) {
   words_trie = temp;
 }
 
+
+
+
+
+// Method for solving a puzzle has a vector of chars to keep track of characters
+// found
+bool Puzzle::Solve(Puzzle a_single_puzzle, std::vector<char> characters) {
+  if (a_single_puzzle.IsTrieEmpty()) { // if all words have been found then success!
+    return true;
+  }
+  // Consider 8 directions
+
+  return false;
+}
+// method to find next box in grid
+std::tuple<int, int> Puzzle::FindNextCharacter(int row, int col) {
+  // beginning the entire solve algorithm at the first column
+  if (row == 0 && col == 0) {
+    return std::make_tuple(0,0);
+  } else if (row <= kPuzzleSize - 1 && col < kPuzzleSize - 1) {
+    // you're in the middle of a row but not the end of the column
+    return std::make_tuple(row, col + 1);
+  } else if (row < kPuzzleSize - 1 && col == kPuzzleSize - 1) {
+    // you've reached the end of a row
+    return std::make_tuple(row + 1, 0);
+  } else {
+    return std::make_tuple(0,0); // come back to this....
+  }
+}
 } // namespace wordsearch
