@@ -25,7 +25,7 @@ void Puzzle::CreatePuzzleGrid(std::string& puzzle) {
   // iterates through 2d array
   for (int row = 0; row < kPuzzleSize; row++) {
     for (int column = 0; column < kPuzzleSize; column++) {
-      puzzle_[row][column] = puzzle.at(char_counter);
+      puzzle_[row][column] = tolower(puzzle.at(char_counter));
       char_counter++;
     }
   }
@@ -46,6 +46,9 @@ void Puzzle::CreateTrie(std::string& words) {
     // code derived from:
     // https://www.techiedelight.com/convert-string-vector-chars-cpp/
     std::vector<char> word_vec(word.begin(), word.end());
+    for (char c : word_vec) {
+      tolower(c);
+    }
     temp.add(word_vec);
     word_vec.clear();
   }
@@ -68,6 +71,39 @@ void Puzzle::CreateWordListVector(std::string& words, std::vector<std::string>& 
   }
 }
 
+// Allows the altering of the grid
+void Puzzle::ChangeCharacter(int row, int col, char value) {
+  puzzle_[row][col] = value;
+}
+// Checks for value in trie
+bool Puzzle::Check(std::vector<char> values) {
+  return words_trie_.check(values);
+}
+// Removes value in trie
+void Puzzle::Remove(std::vector<char> values) {
+  words_trie_.remove(values);
+}
+
+// checks if trie is empty
+bool Puzzle::IsTrieEmpty() {
+  // Check for every letter in the alphabet - if all of them are empty nodes
+  // then return true
+  bool IsEmpty = true;
+  std::vector<char> alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g','h', 'i',
+                                'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+                                's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+  std::vector<char> letter;
+  for (char c : alphabet) {
+    letter.push_back(c);
+    if (words_trie_.check(letter) == true) {
+      IsEmpty = false; // trie can't be empty since there's a "word" in it
+      break; // no need to continue looping if this is the case
+    }
+    letter.clear(); // clear the letter out
+  }
+  return IsEmpty;
+}
+
 // --------- Methods to help with testing ---------
 void Puzzle::CreatePuzzleGrid(std::string& puzzle, char grid[kPuzzleSize][kPuzzleSize]) {
   // Keeps track of the character in the puzzle
@@ -75,7 +111,7 @@ void Puzzle::CreatePuzzleGrid(std::string& puzzle, char grid[kPuzzleSize][kPuzzl
   // iterates through 2d array
   for (int row = 0; row < kPuzzleSize; row++) {
     for (int column = 0; column < kPuzzleSize; column++) {
-      grid[row][column] = puzzle.at(char_counter);
+      grid[row][column] = tolower(puzzle.at(char_counter));
       char_counter++;
     }
   }
@@ -94,6 +130,9 @@ void Puzzle::CreateTrie(std::string& words, Trie<char>& words_trie) {
     // code derived from:
     // https://www.techiedelight.com/convert-string-vector-chars-cpp/
     std::vector<char> word_vec(word.begin(), word.end());
+    for (char c : word_vec) {
+      tolower(c);
+    }
     temp.add(word_vec);
     word_vec.clear();
   }

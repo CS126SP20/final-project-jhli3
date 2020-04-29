@@ -29,6 +29,14 @@ class Puzzle {
  public:
   // Overloaded constructor
   explicit Puzzle(std::string& puzzle, std::string& words);
+  // Allows the altering of the grid
+  void ChangeCharacter(int row, int col, char value);
+  // Checks for value in trie
+  bool Check(std::vector<char> values);
+  // Removes value in trie
+  void Remove(std::vector<char> values);
+  // checks if trie is empty
+  bool IsTrieEmpty();
   // Solve the puzzle
   void Solve();
 
