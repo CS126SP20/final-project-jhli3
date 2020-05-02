@@ -239,23 +239,193 @@ TEST_CASE("RemovesCharacter test", "[direction][grid]") {
 
 TEST_CASE("Direction checks tests", "[direction]") {
   std::string puzzle_string =
-      "EKOMOORHSUMEGHW"
-      "HLBKDKKUFHESOXF"
-      "GNPRTUSGMAWUPDG"
-      "USIPVLAHAICOBBH"
-      "BBPVAAXIQXOHTNF"
-      "TZPTOPVZHNAVOIY"
-      "GKUUGVRYRFRVQVS"
-      "FBTMRTVEEACLCYI"
-      "XNUWIMORPWASHRK"
-      "AGFRTRGVUOCYOYZ"
-      "NOCICEPAOWUBVBK"
-      "ZHLEAAJTWNNRZLB"
-      "MWMGFUREUYJLMWY"
-      "WXCATUUUDRYIQUB"
-      "WPIEQIJOAQEBZVS";
-  std::string words = "BUG";
+      "EKOMOORHSUMEGHW" //0
+      "HLBKAKKUFHESOXF" //1
+      "GNPRTTSGMAWUPDG" //2
+      "USIPVLHHAICOBBH" //3
+      "BBPVAAXIQXOHTNF" //4
+      "TZPTOPVZHNAVOIY" //5
+      "GKUUGVRTRFRVQVS" //6
+      "FBTMRTVEEACLCYI" //7
+      "LNUWIMORPWASHRK" //8
+      "AGFRTRGVUOCYOYZ" //9
+      "NOCICPPAOWUBVBK" //A
+      "ZHLEAAJTWNNRZLB" //B
+      "MWMLFUREUYJLMWY" //C
+      "WXCATUUUDRYIQUB" //D
+      "WPTEQIJOAQEBZVS";//E
+  //   0123456789ABCDE
+  /*
+   * N: BUG 4 0
+   * S: FLAN 7 0
+   * E: WASH 8 9
+   * W: MUSHROOM 0 10
+   * NW: WET 8 9
+   * NE: CLAP 13 2
+   * SW: FAT 12 4
+   * SE: MATH 0 4
+   * */
+  std::string words = "BUG MUSHROOM FLAN WASH CLAP WET FAT MATH";
   std::vector<char> characters;
   wordsearch::Puzzle puzzle(puzzle_string, words);
-  REQUIRE(puzzle.CheckNorth(puzzle, 4, 0, characters) == true);
+
+  SECTION("North") {
+    REQUIRE(puzzle.CheckNorth(puzzle, 4, 0, characters) == true);
+    characters.clear();
+
+    REQUIRE_FALSE(puzzle.CheckSouth(puzzle, 4, 0, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckEast(puzzle, 4, 0, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 4, 0, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 4, 0, characters) == true);
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthWest(puzzle, 4, 0, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthEast(puzzle, 4, 0, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthWest(puzzle, 4, 0, characters));
+    characters.clear();
+  }
+
+  SECTION("South") {
+    REQUIRE(puzzle.CheckSouth(puzzle, 7, 0, characters) == true);
+    characters.clear();
+
+    REQUIRE_FALSE(puzzle.CheckNorth(puzzle, 7, 0, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckEast(puzzle, 7, 0, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 7, 0, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 7, 0, characters) == true);
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthWest(puzzle, 7, 0, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthEast(puzzle, 7, 0, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthWest(puzzle, 7, 0, characters));
+    characters.clear();
+  }
+
+  SECTION("East") {
+    REQUIRE(puzzle.CheckEast(puzzle, 8, 9, characters) == true);
+    characters.clear();
+
+    REQUIRE_FALSE(puzzle.CheckNorth(puzzle, 8, 9, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouth(puzzle, 8, 9, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 8, 9, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 8, 9, characters) == true);
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthWest(puzzle, 8, 9, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthEast(puzzle, 8, 9, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthWest(puzzle, 8, 9, characters));
+    characters.clear();
+  }
+
+  SECTION("West") {
+    REQUIRE(puzzle.CheckWest(puzzle, 0, 10, characters) == true);
+    characters.clear();
+
+    REQUIRE_FALSE(puzzle.CheckNorth(puzzle, 0, 10, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouth(puzzle, 0, 10, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckEast(puzzle, 0, 10, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 0, 10, characters) == true);
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthWest(puzzle, 0, 10, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthEast(puzzle, 0, 10, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthWest(puzzle, 0, 10, characters));
+    characters.clear();
+  }
+
+  SECTION("NorthEast") {
+    REQUIRE(puzzle.CheckNorthEast(puzzle, 13, 2, characters) == true);
+    characters.clear();
+
+    REQUIRE_FALSE(puzzle.CheckNorth(puzzle, 13, 2, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouth(puzzle, 13, 2, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckEast(puzzle, 13, 2, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 13, 2, characters) == true);
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthWest(puzzle, 13, 2, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthEast(puzzle, 13, 2, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthWest(puzzle, 13, 2, characters));
+    characters.clear();
+  }
+
+  SECTION("NorthWest") {
+    REQUIRE(puzzle.CheckNorthWest(puzzle, 8, 9, characters) == true);
+    characters.clear();
+
+    REQUIRE_FALSE(puzzle.CheckNorth(puzzle, 8, 9, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouth(puzzle, 8, 9, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckEast(puzzle, 8, 9, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 8, 9, characters) == true);
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 8, 9, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthEast(puzzle, 8, 9, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthWest(puzzle, 8, 9, characters));
+    characters.clear();
+  }
+
+  SECTION("SouthEast") {
+    REQUIRE(puzzle.CheckSouthEast(puzzle, 0, 3, characters) == true);
+    characters.clear();
+
+    REQUIRE_FALSE(puzzle.CheckNorth(puzzle, 0, 3, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouth(puzzle, 0, 3, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckEast(puzzle, 0, 3, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 0, 3, characters) == true);
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 0, 3, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthWest(puzzle, 0, 3, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthWest(puzzle, 0, 3, characters));
+    characters.clear();
+  }
+
+  SECTION("SouthWest") {
+    REQUIRE(puzzle.CheckSouthWest(puzzle, 12, 4, characters) == true);
+    characters.clear();
+
+    REQUIRE_FALSE(puzzle.CheckNorth(puzzle, 12, 4, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouth(puzzle, 12, 4, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckEast(puzzle, 12, 4, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 12, 4, characters) == true);
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 12, 4, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckNorthWest(puzzle, 12, 4, characters));
+    characters.clear();
+    REQUIRE_FALSE(puzzle.CheckSouthEast(puzzle, 12, 4, characters));
+    characters.clear();
+  }
 }
