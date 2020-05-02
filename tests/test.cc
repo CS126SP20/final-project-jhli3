@@ -196,16 +196,12 @@ TEST_CASE("IsFullWord test", "[direction][trie]") {
   Trie<char> trie; // Create trie of chars
 
   // add words to the trie
-  trie.add({'a', 'p', 'p', 'l', 'e', 's'});
-  trie.add({'a', 'p', 'r', 'o', 'n'});
-  trie.add({'a', 'b', 'l', 'e'});
-  trie.add({'c', 'a', 'p'});
-  trie.add({'c', 'a', 'p', 'p', 'e', 'd'});
+  trie.add({'A', 'P', 'P', 'L', 'E', 'S'});
 
   // This is a full word
-  std::vector<char> full_word{'a', 'p', 'p', 'l', 'e', 's'};
+  std::vector<char> full_word{'A', 'P', 'P', 'L', 'E', 'S'};
   // This is not a full word
-  std::vector<char> partial_word{'a', 'p', 'p', 'l', 'e'};
+  std::vector<char> partial_word{'A', 'P', 'P', 'L', 'E'};
 
   wordsearch::Puzzle puzzle;
 
@@ -245,10 +241,10 @@ TEST_CASE("Direction checks tests", "[direction]") {
   std::string puzzle_string =
       "EKOMOORHSUMEGHW"
       "HLBKDKKUFHESOXF"
-      "LNPRTUSGMAWUPDG"
-      "WSIPVLAHAICOBBH"
+      "GNPRTUSGMAWUPDG"
+      "USIPVLAHAICOBBH"
       "BBPVAAXIQXOHTNF"
-      "UZPTOPVZHNAVOIY"
+      "TZPTOPVZHNAVOIY"
       "GKUUGVRYRFRVQVS"
       "FBTMRTVEEACLCYI"
       "XNUWIMORPWASHRK"

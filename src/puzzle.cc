@@ -175,8 +175,9 @@ void Puzzle::UndoRemoval(Puzzle& a_single_puzzle, int row, int col, std::vector<
 
 bool Puzzle::IsFullWord(Trie<char>& trie, std::vector<char>& word) {
   for (char letter : alphabet) {
-    word.push_back(letter); // adds letter
+    word.push_back(toupper(letter)); // adds letter
     if (trie.check(word)) { // checks if there's a potential word
+      word.pop_back();
       return false; // if there's potential then it's not a full word yet
     }
     word.pop_back(); // removes letter and moves onto the next one
@@ -203,13 +204,58 @@ bool Puzzle::CheckNorth(Puzzle& a_single_puzzle, int row, int col, std::vector<c
   return false; // this triggers back tracking
 }
 bool Puzzle::CheckSouth(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
-
+// Check validity of coordinate
+  if (row >= kPuzzleSize) return false; // when going up the row number increases
+  characters.push_back(a_single_puzzle.puzzle_[row][col]);
+  a_single_puzzle.puzzle_[row][col] = '.'; // temporarily removes the character
+  if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
+    // At this point thus far the characters do belong in the trie and hold potential
+    // to be a word being sought
+    if (IsFullWord(a_single_puzzle.words_trie_, characters)) { // Check if word is full word
+      return true;
+    } else if (CheckSouth(a_single_puzzle, row + 1, col, characters)) { // Otherwise check if the continuation north will find the word
+      return true;
+    }
+    // at this point the word doesn't exist in the puzzle so undo the removal of the character
+    UndoRemoval(a_single_puzzle, row, col, characters);
+  }
+  return false; // this triggers back tracking
 }
 bool Puzzle::CheckEast(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
-
+// Check validity of coordinate
+  if (col >= kPuzzleSize) return false; // when going east the col number increases
+  characters.push_back(a_single_puzzle.puzzle_[row][col]);
+  a_single_puzzle.puzzle_[row][col] = '.'; // temporarily removes the character
+  if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
+    // At this point thus far the characters do belong in the trie and hold potential
+    // to be a word being sought
+    if (IsFullWord(a_single_puzzle.words_trie_, characters)) { // Check if word is full word
+      return true;
+    } else if (CheckEast(a_single_puzzle, row, col + 1, characters)) { // Otherwise check if the continuation north will find the word
+      return true;
+    }
+    // at this point the word doesn't exist in the puzzle so undo the removal of the character
+    UndoRemoval(a_single_puzzle, row, col, characters);
+  }
+  return false; // this triggers back tracking
 }
 bool Puzzle::CheckWest(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
-
+// Check validity of coordinate
+  if (col < 0) return false; // when going west the col number decreases
+  characters.push_back(a_single_puzzle.puzzle_[row][col]);
+  a_single_puzzle.puzzle_[row][col] = '.'; // temporarily removes the character
+  if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
+    // At this point thus far the characters do belong in the trie and hold potential
+    // to be a word being sought
+    if (IsFullWord(a_single_puzzle.words_trie_, characters)) { // Check if word is full word
+      return true;
+    } else if (CheckWest(a_single_puzzle, row, col - 1, characters)) { // Otherwise check if the continuation north will find the word
+      return true;
+    }
+    // at this point the word doesn't exist in the puzzle so undo the removal of the character
+    UndoRemoval(a_single_puzzle, row, col, characters);
+  }
+  return false; // this triggers back tracking
 }
 bool Puzzle::CheckNorthWest(Puzzle&a_single_puzzle, int row, int col, std::vector<char>& characters) {
 
