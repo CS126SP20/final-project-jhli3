@@ -22,7 +22,7 @@ void Parser::ParseFile(std::string& file_name) {
     // Using this vector check that file is holding valid contents
     if (IsFileValid(file_lines)) {
       // create a puzzle object
-        Puzzle(file_lines.at(1), file_lines.at(2));
+        Puzzle puzzle(file_lines.at(1), file_lines.at(2));
         cout << "Puzzle created";
     } else {
       cout << "This is an invalid file.";
@@ -64,7 +64,7 @@ bool Parser::IsFileValid(std::vector<std::string>& lines) {
   if (lines.size() != kFileSize) { // files contains the wrong contents
     cout << "Wrong number of lines";
     return false;
-  } else if (lines.at(0).compare(kHeader) != 0) { // files header does not match
+  } else if (lines.at(0) != kHeader) { // files header does not match
     cout << "Wrong header";
     return false;
   } else if (!IsPuzzleValid(lines.at(1), lines.at(2))) {
@@ -96,11 +96,11 @@ bool Parser::IsPuzzleValid(std::string& wordsearch, std::string& words) {
   std::vector<std::string> words_list;
   // Keep printing tokens while one of the
   // delimiters present in char_of_words[].
-  while (token != NULL)
+  while (token != nullptr)
   {
     // adds each word into the
-    words_list.push_back(token);
-    token = std::strtok(NULL, " ");
+    words_list.emplace_back(token);
+    token = std::strtok(nullptr, " ");
   }
   //cout << "Word list size " << words_list.size() << std::endl;
   if (!IsWordListValid(words_list)) { // passes word list to check for validity
@@ -124,7 +124,7 @@ bool Parser::IsAllLetters(std::string& line) {
 
 bool Parser::IsWordListValid(std::vector<std::string>& words) {
   // if there are no words or too many words
-  if (words.size() == 0 || words.size() > 30) {
+  if (words.empty() || words.size() > 30) {
     cout << "Invalid number of words";
     return false;
   }
@@ -155,7 +155,7 @@ void Parser::ParseFileTester(std::string& file_name, std::ostream& cout) {
     // Using this vector check that file is holding valid contents
     if (IsFileValid(file_lines)) {
       // create a puzzle object
-      Puzzle(file_lines.at(1), file_lines.at(2));
+      Puzzle wordsearch(file_lines.at(1), file_lines.at(2));
       cout << "Puzzle created";
     } else {
       cout << "This is an invalid file";

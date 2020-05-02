@@ -5,6 +5,13 @@
 #include <wordsearch/puzzle.h>
 
 namespace wordsearch {
+std::vector<char> alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g','h', 'i',
+                              'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+                              's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+Puzzle::Puzzle() {
+
+}
+
 // Overloaded constructor
 Puzzle::Puzzle(std::string& puzzle, std::string& words) {
   // load 2d array with values from puzzle string
@@ -18,9 +25,9 @@ void Puzzle::CreatePuzzleGrid(std::string& puzzle) {
   // Keeps track of the character in the puzzle
   int char_counter = 0;
   // iterates through 2d array
-  for (int row = 0; row < kPuzzleSize; row++) {
+  for (auto & row : puzzle_) {
     for (int column = 0; column < kPuzzleSize; column++) {
-      puzzle_[row][column] = tolower(puzzle.at(char_counter));
+      row[column] = toupper(puzzle.at(char_counter));
       char_counter++;
     }
   }
@@ -42,7 +49,7 @@ void Puzzle::CreateTrie(std::string& words) {
     // https://www.techiedelight.com/convert-string-vector-chars-cpp/
     std::vector<char> word_vec(word.begin(), word.end());
     for (char c : word_vec) {
-      tolower(c);
+      toupper(c);
     }
     temp.add(word_vec);
     word_vec.clear();
@@ -58,25 +65,12 @@ void Puzzle::CreateWordListVector(std::string& words, std::vector<std::string>& 
   char *token = std::strtok(char_of_words, " ");
   // Keep printing tokens while one of the
   // delimiters present in char_of_words[].
-  while (token != NULL)
+  while (token != nullptr)
   {
     // adds each word into the
-    words_list.push_back(token);
-    token = std::strtok(NULL, " ");
+    words_list.emplace_back(token);
+    token = std::strtok(nullptr, " ");
   }
-}
-
-// Allows the altering of the grid
-void Puzzle::ChangeCharacter(int row, int col, char value) {
-  puzzle_[row][col] = value;
-}
-// Checks for value in trie
-bool Puzzle::Check(std::vector<char> values) {
-  return words_trie_.check(values);
-}
-// Removes value in trie
-void Puzzle::Remove(std::vector<char> values) {
-  words_trie_.remove(values);
 }
 
 // checks if trie is empty
@@ -84,13 +78,10 @@ bool Puzzle::IsTrieEmpty() {
   // Check for every letter in the alphabet - if all of them are empty nodes
   // then return true
   bool IsEmpty = true;
-  std::vector<char> alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g','h', 'i',
-                                'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
-                                's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
   std::vector<char> letter;
   for (char c : alphabet) {
     letter.push_back(c);
-    if (words_trie_.check(letter) == true) {
+    if (words_trie_.check(letter)) {
       IsEmpty = false; // trie can't be empty since there's a "word" in it
       break; // no need to continue looping if this is the case
     }
@@ -106,7 +97,7 @@ void Puzzle::CreatePuzzleGrid(std::string& puzzle, char grid[kPuzzleSize][kPuzzl
   // iterates through 2d array
   for (int row = 0; row < kPuzzleSize; row++) {
     for (int column = 0; column < kPuzzleSize; column++) {
-      grid[row][column] = tolower(puzzle.at(char_counter));
+      grid[row][column] = toupper(puzzle.at(char_counter));
       char_counter++;
     }
   }
@@ -126,7 +117,7 @@ void Puzzle::CreateTrie(std::string& words, Trie<char>& words_trie) {
     // https://www.techiedelight.com/convert-string-vector-chars-cpp/
     std::vector<char> word_vec(word.begin(), word.end());
     for (char c : word_vec) {
-      tolower(c);
+      toupper(c);
     }
     temp.add(word_vec);
     word_vec.clear();
@@ -135,18 +126,24 @@ void Puzzle::CreateTrie(std::string& words, Trie<char>& words_trie) {
 }
 
 
-
-
+// --------- Methods for solving the puzzle  ---------
 
 // Method for solving a puzzle has a vector of chars to keep track of characters
 // found
-bool Puzzle::Solve(Puzzle a_single_puzzle, std::vector<char> characters) {
+bool Puzzle::Solve(Puzzle& a_single_puzzle, int row, int col) {
   if (a_single_puzzle.IsTrieEmpty()) { // if all words have been found then success!
     return true;
   }
-  // Consider 8 directions
+  // Check if this first character is beginning of a word being sought
+  if (a_single_puzzle.words_trie_.check({a_single_puzzle.puzzle_[row][col]})) {
+    // Consider 8 directions for one square of the grid if one direction is true then run the same direction algorithm
 
-  return false;
+  }
+
+  // Move onto next square on grid
+  std::tuple<int, int> next = FindNextCharacter(row, col);
+  if (Solve(a_single_puzzle, std::get<0>(next), std::get<1>(next))) return true; // all words are eventually found
+  return false; // a word wasn't found at some point
 }
 // method to find next box in grid
 std::tuple<int, int> Puzzle::FindNextCharacter(int row, int col) {
@@ -160,7 +157,62 @@ std::tuple<int, int> Puzzle::FindNextCharacter(int row, int col) {
     // you've reached the end of a row
     return std::make_tuple(row + 1, 0);
   } else {
-    return std::make_tuple(0,0); // come back to this....
+    return std::make_tuple(-1,-1); // this means all squares on the grid have been checked
   }
+}
+
+void Puzzle::RemovesCharacter(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
+  a_single_puzzle.puzzle_[row][col] = characters.at(characters.size() - 1); // undo the addition of character
+  characters.pop_back();
+}
+
+bool Puzzle::IsFullWord(Trie<char>& trie, std::vector<char>& word) {
+  for (char letter : alphabet) {
+    word.push_back(letter); // adds letter
+    if (trie.check(word)) { // checks if there's a potential word
+      return true;
+    }
+    word.pop_back(); // removes letter and moves onto the next one
+  }
+}
+
+bool Puzzle::CheckNorth(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
+  // Check validity of coordinate
+  if (row < 0) return false; // when going up the row number decreases
+  characters.push_back(a_single_puzzle.puzzle_[row][col]);
+  a_single_puzzle.puzzle_[row][col] = '.'; // temporarily removes the character
+  if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
+    // At this point thus far the characters do belong in the trie and hold potential
+    // to be a word being sought
+    if (IsFullWord(a_single_puzzle.words_trie_, characters)) { // Check if word is full word
+      return true;
+    } else if (CheckNorth(a_single_puzzle, row - 1, col, characters)) { // Otherwise check if the continuation north will find the word
+      return true;
+    }
+    // at this point the word doesn't exist in the puzzle so undo the removal of the character
+    RemovesCharacter(a_single_puzzle, row, col, characters);
+  }
+  return false; // this triggers back tracking
+}
+bool Puzzle::CheckSouth(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
+
+}
+bool Puzzle::CheckEast(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
+
+}
+bool Puzzle::CheckWest(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
+
+}
+bool Puzzle::CheckNorthWest(Puzzle&a_single_puzzle, int row, int col, std::vector<char>& characters) {
+
+}
+bool Puzzle::CheckNorthEast(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
+
+}
+bool Puzzle::CheckSouthWest(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
+
+}
+bool Puzzle::CheckSouthEast(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
+
 }
 } // namespace wordsearch

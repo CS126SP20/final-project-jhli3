@@ -166,7 +166,55 @@ TEST_CASE("CreateTrie test", "[puzzle], [trie]") {
 
 TEST_CASE("CreatePuzzle test", "[puzzle]") {
   char grid [kPuzzleSize][kPuzzleSize];
-  std::string puzzle_string;
+  std::string puzzle_string =
+      "EKOMOORHSUMEGHWHLBKDKKUFHESOXFLNPRTUSGMAWUPDGWSIPVLAHAICOBBHDBPVAAXIQXOHTNFHZPTOPVZHNAVOIYJKUUGVRYRFRVQVSFBTMRTVEEACLCYIXNUWIMORPWASHRKAGFRTRGVUOCYOYZNOCICEPAOWUBVBKZHLEAAJTWNNRZLBMWMGFUREUYJLMWYWXCATUUUDRYIQUBWPIEQIJOAQEBZVS";
+  char correct_grid [kPuzzleSize][kPuzzleSize] =
+      {{'E', 'K', 'O', 'M', 'O', 'O', 'R', 'H', 'S', 'U', 'M', 'E', 'G', 'H', 'W'},
+       {'H', 'L', 'B', 'K', 'D', 'K', 'K', 'U', 'F', 'H', 'E', 'S', 'O', 'X', 'F'},
+       {'L', 'N', 'P', 'R', 'T', 'U', 'S', 'G', 'M', 'A', 'W', 'U', 'P', 'D', 'G'},
+       {'W', 'S', 'I', 'P', 'V', 'L', 'A', 'H', 'A', 'I', 'C', 'O', 'B', 'B', 'H'},
+       {'D', 'B', 'P', 'V', 'A', 'A', 'X', 'I', 'Q', 'X', 'O', 'H', 'T', 'N', 'F'},
+       {'H', 'Z', 'P', 'T', 'O', 'P', 'V', 'Z', 'H', 'N', 'A', 'V', 'O', 'I', 'Y'},
+       {'J', 'K', 'U', 'U', 'G', 'V', 'R', 'Y', 'R', 'F', 'R', 'V', 'Q', 'V', 'S'},
+       {'F', 'B', 'T', 'M', 'R', 'T', 'V', 'E', 'E', 'A', 'C', 'L', 'C', 'Y', 'I'},
+       {'X', 'N', 'U', 'W', 'I', 'M', 'O', 'R', 'P', 'W', 'A', 'S', 'H', 'R', 'K'},
+       {'A', 'G', 'F', 'R', 'T', 'R', 'G', 'V', 'U', 'O', 'C', 'Y', 'O', 'Y', 'Z'},
+       {'N', 'O', 'C', 'I', 'C', 'E', 'P', 'A', 'O', 'W', 'U', 'B', 'V', 'B', 'K'},
+       {'Z', 'H', 'L', 'E', 'A', 'A', 'J', 'T', 'W', 'N', 'N', 'R', 'Z', 'L', 'B'},
+       {'M', 'W', 'M', 'G', 'F', 'U', 'R', 'E', 'U', 'Y', 'J', 'L', 'M', 'W', 'Y'},
+       {'W', 'X', 'C', 'A', 'T', 'U', 'U', 'U', 'D', 'R', 'Y', 'I', 'Q', 'U', 'B'},
+       {'W', 'P', 'I', 'E', 'Q', 'I', 'J', 'O', 'A', 'Q', 'E', 'B', 'Z', 'V', 'S'}};
   wordsearch::Puzzle::CreatePuzzleGrid(puzzle_string, grid);
+  REQUIRE(grid == correct_grid);
+}
+
+//TEST_CASE("Direction checks tests", "[direction]") {
+//  std::string puzzle_string =
+//      "EKOMOORHSUMEGHWHLBKDKKUFHESOXFLNPRTUSGMAWUPDGWSIPVLAHAICOBBHDBPVAAXIQXOHTNFHZPTOPVZHNAVOIYJKUUGVRYRFRVQVSFBTMRTVEEACLCYIXNUWIMORPWASHRKAGFRTRGVUOCYOYZNOCICEPAOWUBVBKZHLEAAJTWNNRZLBMWMGFUREUYJLMWYWXCATUUUDRYIQUBWPIEQIJOAQEBZVS";
+//  std::string words = "APPLE BIRD CAR CAT HOUSE MUSHROOM";
+//  wordsearch::Puzzle puzzle(puzzle_string, words);
+//}
+
+// RemovesCharacter
+
+TEST_CASE("IsFullWord test", "[direction][trie]") {
+  Trie<char> trie; // Create trie of chars
+
+  // add words to the trie
+  trie.add({'a', 'p', 'p', 'l', 'e', 's'});
+  trie.add({'a', 'p', 'r', 'o', 'n'});
+  trie.add({'a', 'b', 'l', 'e'});
+  trie.add({'c', 'a', 'p'});
+  trie.add({'c', 'a', 'p', 'p', 'e', 'd'});
+
+  // This is a full word
+  std::vector<char> full_word{'a', 'p', 'p', 'l', 'e', 's'};
+  // This is not a full word
+  std::vector<char> partial_word{'a', 'p', 'p', 'l', 'e'};
+
+  wordsearch::Puzzle puzzle;
+
+  REQUIRE_FALSE(!puzzle.IsFullWord(trie, full_word));
+  REQUIRE_FALSE(puzzle.IsFullWord(trie, partial_word));
 
 }
