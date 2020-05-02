@@ -125,6 +125,13 @@ void Puzzle::CreateTrie(std::string& words, Trie<char>& words_trie) {
   words_trie = temp;
 }
 
+void Puzzle::ChangeCharacter(int row, int col, char value) {
+  puzzle_[row][col] = value;
+}
+
+char Puzzle::GetCharacter(int row, int col) {
+  return puzzle_[row][col];
+}
 
 // --------- Methods for solving the puzzle  ---------
 
@@ -161,7 +168,7 @@ std::tuple<int, int> Puzzle::FindNextCharacter(int row, int col) {
   }
 }
 
-void Puzzle::RemovesCharacter(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
+void Puzzle::UndoRemoval(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
   a_single_puzzle.puzzle_[row][col] = characters.at(characters.size() - 1); // undo the addition of character
   characters.pop_back();
 }
@@ -170,10 +177,11 @@ bool Puzzle::IsFullWord(Trie<char>& trie, std::vector<char>& word) {
   for (char letter : alphabet) {
     word.push_back(letter); // adds letter
     if (trie.check(word)) { // checks if there's a potential word
-      return true;
+      return false; // if there's potential then it's not a full word yet
     }
     word.pop_back(); // removes letter and moves onto the next one
   }
+  return true;
 }
 
 bool Puzzle::CheckNorth(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
@@ -190,7 +198,7 @@ bool Puzzle::CheckNorth(Puzzle& a_single_puzzle, int row, int col, std::vector<c
       return true;
     }
     // at this point the word doesn't exist in the puzzle so undo the removal of the character
-    RemovesCharacter(a_single_puzzle, row, col, characters);
+    UndoRemoval(a_single_puzzle, row, col, characters);
   }
   return false; // this triggers back tracking
 }

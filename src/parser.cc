@@ -15,18 +15,21 @@ int const kCharacterSize = 1;
 // Runs the parsing of the file
 void Parser::ParseFile(std::string& file_name) {
   // Checks that file exists
-  if (DoesFileExist(file_name)) { // if it doesn't exist a message will be print
-    std::vector<std::string> file_lines; // create vector holding lines in file
-    SplitTextLines(file_name, file_lines); // split lines and add to vector
+  if (DoesFileExist(
+          file_name)) {  // if it doesn't exist a message will be print
+    std::vector<std::string> file_lines;  // create vector holding lines in file
+    SplitTextLines(file_name, file_lines);  // split lines and add to vector
 
     // Using this vector check that file is holding valid contents
     if (IsFileValid(file_lines)) {
       // create a puzzle object
-        Puzzle puzzle(file_lines.at(1), file_lines.at(2));
-        cout << "Puzzle created";
+      Puzzle puzzle(file_lines.at(1), file_lines.at(2));
+      cout << "Puzzle created";
     } else {
-      cout << "This is an invalid file.";
+      cout << "This is an invalid file";
     }
+  } else {
+    cout << "This is an invalid file";
   }
 }
 // Checks that file exists
@@ -148,18 +151,21 @@ bool Parser::IsWordListValid(std::vector<std::string>& words) {
 // https://stackoverflow.com/questions/40297782/c-unit-testing-check-output-is-correct
 void Parser::ParseFileTester(std::string& file_name, std::ostream& cout) {
   // Checks that file exists
-  if (DoesFileExist(file_name)) { // if it doesn't exist a message will be print
-    std::vector<std::string> file_lines; // create vector holding lines in file
-    SplitTextLines(file_name, file_lines); // split lines and add to vector
+  if (DoesFileExist(
+      file_name)) {  // if it doesn't exist a message will be print
+    std::vector<std::string> file_lines;  // create vector holding lines in file
+    SplitTextLines(file_name, file_lines);  // split lines and add to vector
 
     // Using this vector check that file is holding valid contents
     if (IsFileValid(file_lines)) {
       // create a puzzle object
-      Puzzle wordsearch(file_lines.at(1), file_lines.at(2));
+      Puzzle puzzle(file_lines.at(1), file_lines.at(2));
       cout << "Puzzle created";
     } else {
       cout << "This is an invalid file";
     }
+  } else {
+    cout << "This is an invalid file";
   }
 }
 } // namespace wordsearch

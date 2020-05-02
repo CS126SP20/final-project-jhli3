@@ -185,17 +185,12 @@ TEST_CASE("CreatePuzzle test", "[puzzle]") {
        {'W', 'X', 'C', 'A', 'T', 'U', 'U', 'U', 'D', 'R', 'Y', 'I', 'Q', 'U', 'B'},
        {'W', 'P', 'I', 'E', 'Q', 'I', 'J', 'O', 'A', 'Q', 'E', 'B', 'Z', 'V', 'S'}};
   wordsearch::Puzzle::CreatePuzzleGrid(puzzle_string, grid);
-  REQUIRE(grid == correct_grid);
+  for (int row = 0; row < kPuzzleSize; row++) {
+    for (int col = 0; col < kPuzzleSize; col++) {
+      REQUIRE(grid[row][col] == correct_grid[row][col]);
+    }
+  }
 }
-
-//TEST_CASE("Direction checks tests", "[direction]") {
-//  std::string puzzle_string =
-//      "EKOMOORHSUMEGHWHLBKDKKUFHESOXFLNPRTUSGMAWUPDGWSIPVLAHAICOBBHDBPVAAXIQXOHTNFHZPTOPVZHNAVOIYJKUUGVRYRFRVQVSFBTMRTVEEACLCYIXNUWIMORPWASHRKAGFRTRGVUOCYOYZNOCICEPAOWUBVBKZHLEAAJTWNNRZLBMWMGFUREUYJLMWYWXCATUUUDRYIQUBWPIEQIJOAQEBZVS";
-//  std::string words = "APPLE BIRD CAR CAT HOUSE MUSHROOM";
-//  wordsearch::Puzzle puzzle(puzzle_string, words);
-//}
-
-// RemovesCharacter
 
 TEST_CASE("IsFullWord test", "[direction][trie]") {
   Trie<char> trie; // Create trie of chars
@@ -214,7 +209,57 @@ TEST_CASE("IsFullWord test", "[direction][trie]") {
 
   wordsearch::Puzzle puzzle;
 
-  REQUIRE_FALSE(!puzzle.IsFullWord(trie, full_word));
+  REQUIRE(puzzle.IsFullWord(trie, full_word) == true);
   REQUIRE_FALSE(puzzle.IsFullWord(trie, partial_word));
+}
 
+TEST_CASE("RemovesCharacter test", "[direction][grid]") {
+  std::string puzzle_string =
+      "EKOMOORHSUMEGHW"
+      "HLBKDKKUFHESOXF"
+      "LNPRTUSGMAWUPDG"
+      "WSIPVLAHAICOBBH"
+      "BBPVAAXIQXOHTNF"
+      "UZPTOPVZHNAVOIY"
+      "GKUUGVRYRFRVQVS"
+      "FBTMRTVEEACLCYI"
+      "XNUWIMORPWASHRK"
+      "AGFRTRGVUOCYOYZ"
+      "NOCICEPAOWUBVBK"
+      "ZHLEAAJTWNNRZLB"
+      "MWMGFUREUYJLMWY"
+      "WXCATUUUDRYIQUB"
+      "WPIEQIJOAQEBZVS";
+  std::string words = "BUG";
+  wordsearch::Puzzle puzzle(puzzle_string, words);
+  puzzle.ChangeCharacter(4, 0, '.'); // manually remove a value
+  REQUIRE(puzzle.GetCharacter(4,0) == '.'); // check that it's been properly removed
+
+  std::vector<char> word {'A','B'};
+  puzzle.UndoRemoval(puzzle, 4, 0, word);
+  REQUIRE(puzzle.GetCharacter(4,0) == 'B'); // Check that character has been restored
+  REQUIRE(word.size() == 1); // Check that character is no longer in vector
+}
+
+TEST_CASE("Direction checks tests", "[direction]") {
+  std::string puzzle_string =
+      "EKOMOORHSUMEGHW"
+      "HLBKDKKUFHESOXF"
+      "LNPRTUSGMAWUPDG"
+      "WSIPVLAHAICOBBH"
+      "BBPVAAXIQXOHTNF"
+      "UZPTOPVZHNAVOIY"
+      "GKUUGVRYRFRVQVS"
+      "FBTMRTVEEACLCYI"
+      "XNUWIMORPWASHRK"
+      "AGFRTRGVUOCYOYZ"
+      "NOCICEPAOWUBVBK"
+      "ZHLEAAJTWNNRZLB"
+      "MWMGFUREUYJLMWY"
+      "WXCATUUUDRYIQUB"
+      "WPIEQIJOAQEBZVS";
+  std::string words = "BUG";
+  std::vector<char> characters;
+  wordsearch::Puzzle puzzle(puzzle_string, words);
+  REQUIRE(puzzle.CheckNorth(puzzle, 4, 0, characters) == true);
 }

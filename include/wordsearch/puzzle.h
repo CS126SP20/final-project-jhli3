@@ -30,13 +30,15 @@ class Puzzle {
   Puzzle();
   // Overloaded constructor
   explicit Puzzle(std::string& puzzle, std::string& words);
-//  // Allows the altering of the grid
-//  void ChangeCharacter(int row, int col, char value);
+  // Allows the altering of the grid
+  void ChangeCharacter(int row, int col, char value);
+  // Retrieve character in puzzle grid
+  char GetCharacter(int row, int col);
 //  // Checks for value in trie
 //  bool Check(std::vector<char> values);
 //  // Removes value in trie
 //  void Remove(std::vector<char> values);
-//  // checks if trie is empty
+  // checks if trie is empty
   bool IsTrieEmpty();
 
   // ------------ Methods for solving puzzle ------------
@@ -57,7 +59,7 @@ class Puzzle {
   bool CheckSouthEast(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters);
 
   // Undo the removal of a character from the board during back tracking
-  void RemovesCharacter(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters);
+  void UndoRemoval(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters);
   // Checks if current word is the full word within a trie
   bool IsFullWord(Trie<char>& trie, std::vector<char>& word);
 
