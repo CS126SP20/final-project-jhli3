@@ -24,4 +24,8 @@
 ###### 4/29/2020
 - Read about backtracking specifically for word puzzles
 - Began planning algorithm for solving word search
+
+###### 5/02/2020
+- Wrote helper methods to search for words in 8 cardinal directions
+- Wrote tests for these direction search methods as well as other helper methods
 ---
