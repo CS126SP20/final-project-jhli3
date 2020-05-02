@@ -25,10 +25,10 @@ void Puzzle::CreatePuzzleGrid(std::string& puzzle) {
   // Keeps track of the character in the puzzle
   int char_counter = 0;
   // iterates through 2d array
-  for (auto & row : puzzle_) {
-    for (int column = 0; column < kPuzzleSize; column++) {
-      row[column] = toupper(puzzle.at(char_counter));
-      char_counter++;
+  for (int row = 0; row < kPuzzleSize; row++) {
+    for (int col = 0; col < kPuzzleSize; col++) {
+      puzzle_[row][col] = toupper(puzzle.at(char_counter));
+      solution_[row][col] = toupper(puzzle.at(char_counter));
     }
   }
 }
@@ -126,11 +126,11 @@ void Puzzle::CreateTrie(std::string& words, Trie<char>& words_trie) {
 }
 
 void Puzzle::ChangeCharacter(int row, int col, char value) {
-  puzzle_[row][col] = value;
+  solution_[row][col] = value;
 }
 
 char Puzzle::GetCharacter(int row, int col) {
-  return puzzle_[row][col];
+  return solution_[row][col];
 }
 
 // --------- Methods for solving the puzzle  ---------
@@ -143,8 +143,40 @@ bool Puzzle::Solve(Puzzle& a_single_puzzle, int row, int col) {
   }
   // Check if this first character is beginning of a word being sought
   if (a_single_puzzle.words_trie_.check({a_single_puzzle.puzzle_[row][col]})) {
+    std::vector<char> characters;
     // Consider 8 directions for one square of the grid if one direction is true then run the same direction algorithm
-
+    if (CheckNorth(a_single_puzzle, row - 1, col, characters)) { //if the word is found north
+      a_single_puzzle.words_trie_.remove(characters);
+    }
+    characters.clear();
+    if (CheckSouth(a_single_puzzle, row + 1, col, characters)) { //if the word is found south
+      a_single_puzzle.words_trie_.remove(characters);
+    }
+    characters.clear();
+    if (CheckEast(a_single_puzzle, row, col + 1, characters)) { //if the word is found east
+      a_single_puzzle.words_trie_.remove(characters);
+    }
+    characters.clear();
+    if (CheckWest(a_single_puzzle, row, col - 1, characters)) { //if the word is found west
+      a_single_puzzle.words_trie_.remove(characters);
+    }
+    characters.clear();
+    if (CheckNorthEast(a_single_puzzle, row - 1, col + 1, characters)) { //if the word is found northeast
+      a_single_puzzle.words_trie_.remove(characters);
+    }
+    characters.clear();
+    if (CheckNorthWest(a_single_puzzle, row - 1, col - 1, characters)) { //if the word is found northwest
+      a_single_puzzle.words_trie_.remove(characters);
+    }
+    characters.clear();
+    if (CheckSouthEast(a_single_puzzle, row + 1, col + 1, characters)) { //if the word is found southeast
+      a_single_puzzle.words_trie_.remove(characters);
+    }
+    characters.clear();
+    if (CheckSouthWest(a_single_puzzle, row + 1, col - 1, characters)) { //if the word is found southwest
+      a_single_puzzle.words_trie_.remove(characters);
+    }
+    characters.clear();
   }
 
   // Move onto next square on grid
@@ -169,7 +201,7 @@ std::tuple<int, int> Puzzle::FindNextCharacter(int row, int col) {
 }
 
 void Puzzle::UndoRemoval(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
-  a_single_puzzle.puzzle_[row][col] = characters.at(characters.size() - 1); // undo the addition of character
+  a_single_puzzle.solution_[row][col] = characters.at(characters.size() - 1); // undo the addition of character
   characters.pop_back();
 }
 
@@ -188,8 +220,8 @@ bool Puzzle::IsFullWord(Trie<char>& trie, std::vector<char>& word) {
 bool Puzzle::CheckNorth(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters) {
   // Check validity of coordinate
   if (row < 0) return false; // when going up the row number decreases
-  characters.push_back(a_single_puzzle.puzzle_[row][col]);
-  a_single_puzzle.puzzle_[row][col] = '.'; // temporarily removes the character
+  characters.push_back(a_single_puzzle.puzzle_[row][col]); // when checking words use the puzzle variable
+  a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
     // to be a word being sought
@@ -208,7 +240,7 @@ bool Puzzle::CheckSouth(Puzzle& a_single_puzzle, int row, int col, std::vector<c
 // Check validity of coordinate
   if (row >= kPuzzleSize) return false; // when going up the row number increases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
-  a_single_puzzle.puzzle_[row][col] = '.'; // temporarily removes the character
+  a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
     // to be a word being sought
@@ -227,7 +259,7 @@ bool Puzzle::CheckEast(Puzzle& a_single_puzzle, int row, int col, std::vector<ch
 // Check validity of coordinate
   if (col >= kPuzzleSize) return false; // when going east the col number increases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
-  a_single_puzzle.puzzle_[row][col] = '.'; // temporarily removes the character
+  a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
     // to be a word being sought
@@ -246,7 +278,7 @@ bool Puzzle::CheckWest(Puzzle& a_single_puzzle, int row, int col, std::vector<ch
 // Check validity of coordinate
   if (col < 0) return false; // when going west the col number decreases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
-  a_single_puzzle.puzzle_[row][col] = '.'; // temporarily removes the character
+  a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
     // to be a word being sought
@@ -264,7 +296,7 @@ bool Puzzle::CheckNorthWest(Puzzle&a_single_puzzle, int row, int col, std::vecto
 // Check validity of coordinate
   if (row < 0 || col < 0) return false; // when going NW the row number decreases and col decreases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
-  a_single_puzzle.puzzle_[row][col] = '.'; // temporarily removes the character
+  a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
     // to be a word being sought
@@ -282,7 +314,7 @@ bool Puzzle::CheckNorthEast(Puzzle& a_single_puzzle, int row, int col, std::vect
 // Check validity of coordinate
   if (row < 0 || col >= kPuzzleSize) return false; // when going ne the row number decreases and col increases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
-  a_single_puzzle.puzzle_[row][col] = '.'; // temporarily removes the character
+  a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
     // to be a word being sought
@@ -300,7 +332,7 @@ bool Puzzle::CheckSouthWest(Puzzle& a_single_puzzle, int row, int col, std::vect
 // Check validity of coordinate
   if (row >= kPuzzleSize || col < 0) return false; // when going sw the row number increases and col decreases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
-  a_single_puzzle.puzzle_[row][col] = '.'; // temporarily removes the character
+  a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
     // to be a word being sought
@@ -318,7 +350,7 @@ bool Puzzle::CheckSouthEast(Puzzle& a_single_puzzle, int row, int col, std::vect
 // Check validity of coordinate
   if (row >= kPuzzleSize || col >= kPuzzleSize) return false; // when going se the row number increases and col increases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
-  a_single_puzzle.puzzle_[row][col] = '.'; // temporarily removes the character
+  a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
     // to be a word being sought

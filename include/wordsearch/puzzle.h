@@ -18,6 +18,8 @@ class Puzzle {
  private:
   // Puzzle full of random letters
   char puzzle_ [kPuzzleSize][kPuzzleSize]{};
+  // Solution to puzzle
+  char solution_ [kPuzzleSize][kPuzzleSize]{};
   // Trie structure representing list of words to be found
   Trie<char> words_trie_;
 
