@@ -145,6 +145,10 @@ TEST_CASE("Trie test", "[trie]") {
   // While this combination of symbols exists within the trie, it is not
   // a word that can be retrieved from the trie hierarchy
   REQUIRE(trie.check({'p', 'e', 'd'}) == false);
+
+  trie.remove({'a', 'p', 'p', 'l', 'e'});
+  REQUIRE(trie.check({'a', 'p', 'p', 'l', 'e'}) == false);
+
 }
 
 // Test my own CreateTrie method
@@ -271,6 +275,7 @@ TEST_CASE("Direction checks tests", "[direction]") {
 
   SECTION("North") {
     REQUIRE(puzzle.CheckNorth(puzzle, 4, 0, characters) == true);
+    puzzle.PrintSolution();
     characters.clear();
 
     REQUIRE_FALSE(puzzle.CheckSouth(puzzle, 4, 0, characters));
@@ -279,7 +284,7 @@ TEST_CASE("Direction checks tests", "[direction]") {
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckWest(puzzle, 4, 0, characters));
     characters.clear();
-    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 4, 0, characters) == true);
+    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 4, 0, characters));
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckNorthWest(puzzle, 4, 0, characters));
     characters.clear();
@@ -291,6 +296,7 @@ TEST_CASE("Direction checks tests", "[direction]") {
 
   SECTION("South") {
     REQUIRE(puzzle.CheckSouth(puzzle, 7, 0, characters) == true);
+    puzzle.Remove(characters);
     characters.clear();
 
     REQUIRE_FALSE(puzzle.CheckNorth(puzzle, 7, 0, characters));
@@ -299,7 +305,7 @@ TEST_CASE("Direction checks tests", "[direction]") {
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckWest(puzzle, 7, 0, characters));
     characters.clear();
-    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 7, 0, characters) == true);
+    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 7, 0, characters));
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckNorthWest(puzzle, 7, 0, characters));
     characters.clear();
@@ -319,9 +325,9 @@ TEST_CASE("Direction checks tests", "[direction]") {
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckWest(puzzle, 8, 9, characters));
     characters.clear();
-    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 8, 9, characters) == true);
+    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 8, 9, characters));
     characters.clear();
-    REQUIRE_FALSE(puzzle.CheckNorthWest(puzzle, 8, 9, characters));
+    REQUIRE(puzzle.CheckNorthWest(puzzle, 8, 9, characters) == true); // common character with this direction
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckSouthEast(puzzle, 8, 9, characters));
     characters.clear();
@@ -339,7 +345,7 @@ TEST_CASE("Direction checks tests", "[direction]") {
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckEast(puzzle, 0, 10, characters));
     characters.clear();
-    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 0, 10, characters) == true);
+    REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 0, 10, characters));
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckNorthWest(puzzle, 0, 10, characters));
     characters.clear();
@@ -359,7 +365,7 @@ TEST_CASE("Direction checks tests", "[direction]") {
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckEast(puzzle, 13, 2, characters));
     characters.clear();
-    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 13, 2, characters) == true);
+    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 13, 2, characters));
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckNorthWest(puzzle, 13, 2, characters));
     characters.clear();
@@ -377,9 +383,9 @@ TEST_CASE("Direction checks tests", "[direction]") {
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckSouth(puzzle, 8, 9, characters));
     characters.clear();
-    REQUIRE_FALSE(puzzle.CheckEast(puzzle, 8, 9, characters));
+    REQUIRE(puzzle.CheckEast(puzzle, 8, 9, characters) == true); // common character with this direction
     characters.clear();
-    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 8, 9, characters) == true);
+    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 8, 9, characters));
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 8, 9, characters));
     characters.clear();
@@ -399,7 +405,7 @@ TEST_CASE("Direction checks tests", "[direction]") {
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckEast(puzzle, 0, 3, characters));
     characters.clear();
-    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 0, 3, characters) == true);
+    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 0, 3, characters));
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 0, 3, characters));
     characters.clear();
@@ -419,7 +425,7 @@ TEST_CASE("Direction checks tests", "[direction]") {
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckEast(puzzle, 12, 4, characters));
     characters.clear();
-    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 12, 4, characters) == true);
+    REQUIRE_FALSE(puzzle.CheckWest(puzzle, 12, 4, characters));
     characters.clear();
     REQUIRE_FALSE(puzzle.CheckNorthEast(puzzle, 12, 4, characters));
     characters.clear();
@@ -428,4 +434,54 @@ TEST_CASE("Direction checks tests", "[direction]") {
     REQUIRE_FALSE(puzzle.CheckSouthEast(puzzle, 12, 4, characters));
     characters.clear();
   }
+}
+
+TEST_CASE("Solver test", "[direction][solve]") {
+  std::string puzzle_string =
+      "EKOMOORHSUMEGHW" //0
+      "HLBKAKKUFHESOXF" //1
+      "GNPRTTSGMAWUPDG" //2
+      "USIPVLHHAICOBBH" //3
+      "BBPVAAXIQXOHTNF" //4
+      "TZPTOPVZHNAVOIY" //5
+      "GKUUGVRTRFRVQVS" //6
+      "FBTMRTVEEACLCYI" //7
+      "LNUWIMORPWASHRK" //8
+      "AGFRTRGVUOCYOYZ" //9
+      "NOCICPPAOWUBVBK" //A
+      "ZHLEAAJTWNNRZLB" //B
+      "MWMLFUREUYJLMWY" //C
+      "WXCATUUUDRYIQUB" //D
+      "WPTEQIJOAQEBZVS";//E
+  //   0123456789ABCDE
+  /*
+   * N: BUG 4 0
+   * S: FLAN 7 0
+   * E: WASH 8 9
+   * W: MUSHROOM 0 10
+   * NW: WET 8 9
+   * NE: CLAP 13 2
+   * SW: FAT 12 4
+   * SE: MATH 0 4
+   * */
+  std::string words = "BUG MUSHROOM FLAN WASH CLAP WET FAT MATH";
+  std::vector<char> characters;
+  wordsearch::Puzzle puzzle(puzzle_string, words);
+  REQUIRE(puzzle.Solve(puzzle, 0, 0) == true);
+  REQUIRE(puzzle.IsTrieEmpty() == true);
+//  ". K O . . . . . . . . . G H W"
+//  "H . B K . K K U F H E . O X F"
+//  "L N . . T U S G M A W . P D G"
+//  "W S . . V L A H A I C . B B H"
+//  "D . P V . A X I Q X O . T N F"
+//  "H Z P T O P V Z H N A V O I Y"
+//  "J K U U G V R Y R F R V Q V S"
+//  "F B T M R T V E E A C L C Y I"
+//  "X N U W I M O R P W A S H R K"
+//  "A G F R T R G V U O C Y O Y Z"
+//  "N O C I . E P A O W U B V B K"
+//  "Z H L E A . J T W N N R Z L B"
+//  "M W M G F U . E U Y J L M W Y"
+//  "W X . . . U U U D R Y I Q U B"
+//  "W P I E Q I J O A Q E B Z V S"
 }

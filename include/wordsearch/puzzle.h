@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "solver.h"
 #include "trie/trie.h"
@@ -36,14 +37,17 @@ class Puzzle {
   void ChangeCharacter(int row, int col, char value);
   // Retrieve character in puzzle grid
   char GetCharacter(int row, int col);
-//  // Checks for value in trie
-//  bool Check(std::vector<char> values);
-//  // Removes value in trie
-//  void Remove(std::vector<char> values);
   // checks if trie is empty
   bool IsTrieEmpty();
+  // Pretty prints out solution
+  void PrintSolution();
+  // Pretty prints out puzzle
+  void PrintPuzzle();
+  void Remove(std::vector<char> word);
 
   // ------------ Methods for solving puzzle ------------
+  // Wrapper method for Solve
+  void Solve(Puzzle& a_single_puzzle);
   // Method for solving a puzzle has a vector of chars to keep track of characters
   // found
   bool Solve(Puzzle& a_single_puzzle, int row, int col);

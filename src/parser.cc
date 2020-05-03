@@ -13,7 +13,7 @@ int const kFileSize = 3;
 int const kCharacterSize = 1;
 
 // Runs the parsing of the file
-void Parser::ParseFile(std::string& file_name) {
+Puzzle Parser::ParseFile(std::string& file_name) {
   // Checks that file exists
   if (DoesFileExist(
           file_name)) {  // if it doesn't exist a message will be print
@@ -23,13 +23,15 @@ void Parser::ParseFile(std::string& file_name) {
     // Using this vector check that file is holding valid contents
     if (IsFileValid(file_lines)) {
       // create a puzzle object
-      Puzzle puzzle(file_lines.at(1), file_lines.at(2));
-      cout << "Puzzle created";
+      cout << "Puzzle created" << std::endl;
+      return Puzzle(file_lines.at(1), file_lines.at(2));
     } else {
       cout << "This is an invalid file";
+      return Puzzle();
     }
   } else {
     cout << "This is an invalid file";
+    return Puzzle();
   }
 }
 // Checks that file exists

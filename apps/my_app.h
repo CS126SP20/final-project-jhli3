@@ -21,6 +21,7 @@ class MyApp : public cinder::app::App {
                  const cinder::vec2& loc);
   void PrintSampleTest();
   void TestParser();
+  void TestSolver();
 };
 
 }  // namespace myapp
