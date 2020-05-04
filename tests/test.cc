@@ -130,24 +130,27 @@ TEST_CASE("Trie test", "[trie]") {
   Trie<char> trie; // Create trie of chars
 
   // add words to the trie
-  trie.add({'a', 'p', 'p', 'l', 'e', 's'});
-  trie.add({'a', 'p', 'r', 'o', 'n'});
-  trie.add({'a', 'b', 'l', 'e'});
-  trie.add({'c', 'a', 'p'});
-  trie.add({'c', 'a', 'p', 'p', 'e', 'd'});
+  trie.add({'A', 'P', 'P', 'L', 'E', 'S'});
+  trie.add({'A', 'P', 'R', 'O', 'N'});
+  trie.add({'A', 'B', 'L', 'E'});
+  trie.add({'C', 'A', 'P'});
+  trie.add({'C', 'A', 'P', 'P', 'E', 'D'});
+
+  wordsearch::Puzzle puzzle;
 
   // check/search for certain words in the trie
-  REQUIRE(trie.check({'a', 'p', 'p'}) == true);
-  REQUIRE(trie.check({'a', 'p', 'p', 'l', 'e'}) == true);
-  REQUIRE(trie.check({'a', 'b'}) == true);
-  REQUIRE(trie.check({'c', 'a', 'p', 'p', 'e'}) == true);
+  REQUIRE(trie.check({'A', 'P', 'P'}) == true);
+  REQUIRE(trie.check({'A', 'P', 'P', 'L', 'E', 'S'}) == true);
+  REQUIRE(trie.check({'A', 'B'}) == true);
+  REQUIRE(trie.check({'C', 'A', 'P', 'P', 'E'}) == true);
 
   // While this combination of symbols exists within the trie, it is not
   // a word that can be retrieved from the trie hierarchy
-  REQUIRE(trie.check({'p', 'e', 'd'}) == false);
+  REQUIRE(trie.check({'P', 'E', 'D'}) == false);
 
-  trie.remove({'a', 'p', 'p', 'l', 'e'});
-  REQUIRE(trie.check({'a', 'p', 'p', 'l', 'e'}) == false);
+  //trie.remove({'A', 'P', 'P', 'L', 'E', 'S'});
+  puzzle.RemoveWord(trie, {'A', 'P', 'P', 'L', 'E', 'S'});
+  REQUIRE(trie.check({'A', 'P', 'P', 'L', 'E', 'S'}) == false);
 
 }
 
@@ -275,7 +278,6 @@ TEST_CASE("Direction checks tests", "[direction]") {
 
   SECTION("North") {
     REQUIRE(puzzle.CheckNorth(puzzle, 4, 0, characters) == true);
-    puzzle.PrintSolution();
     characters.clear();
 
     REQUIRE_FALSE(puzzle.CheckSouth(puzzle, 4, 0, characters));
@@ -296,7 +298,6 @@ TEST_CASE("Direction checks tests", "[direction]") {
 
   SECTION("South") {
     REQUIRE(puzzle.CheckSouth(puzzle, 7, 0, characters) == true);
-    puzzle.Remove(characters);
     characters.clear();
 
     REQUIRE_FALSE(puzzle.CheckNorth(puzzle, 7, 0, characters));

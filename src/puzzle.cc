@@ -154,9 +154,31 @@ void Puzzle::PrintPuzzle() {
   }
 }
 
-void Puzzle::Remove(std::vector<char> word) {
-  this->words_trie_.remove(word);
+// Removes word from trie
+// To respect the original words that were inputted and not the combination of
+// words that can be generated from those words, we need to properly remove the full word
+// This means when working backwards finding the first split in the trie in that branch
+// and removing a word up until that split
+void Puzzle::RemoveWord(std::vector<char> word) {
+  // word is the full word we want to remove
+  // we need to work backwards and do a series of checks in the trie
+  // use IsFullWord to check if there are branches
+  while (IsFullWord(this->words_trie_, word)) { // while there are no branches
+    this->words_trie_.remove(word); // remove that word
+    word.pop_back(); // remove last letter and check again for branches
+  }
 }
+
+void Puzzle::RemoveWord(Trie<char>& trie, std::vector<char> word) {
+  // word is the full word we want to remove
+  // we need to work backwards and do a series of checks in the trie
+  // use IsFullWord to check if there are branches
+  while (IsFullWord(trie, word)) { // while there are no branches
+    trie.remove(word); // remove that word
+    word.pop_back(); // remove last letter and check again for branches
+  }
+}
+
 
 
 // --------- Methods for solving the puzzle  ---------
@@ -178,47 +200,47 @@ bool Puzzle::Solve(Puzzle& a_single_puzzle, int row, int col) {
   if (a_single_puzzle.IsTrieEmpty()) { // if all words have been found then success!
     return true;
   }
-    std::vector<char> characters;
   if (a_single_puzzle.words_trie_.check({a_single_puzzle.puzzle_[row][col]})) {
-      // Consider 8 directions for one square of the grid if one direction is true then run the same direction algorithm
+    std::vector<char> characters;
+    // Consider 8 directions for one square of the grid if one direction is true then run the same direction algorithm
       if (CheckNorth(a_single_puzzle, row, col,
                      characters)) {  // if the word is found north
-        a_single_puzzle.words_trie_.remove(characters);
+        a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckSouth(a_single_puzzle, row, col,
                      characters)) {  // if the word is found south
-        a_single_puzzle.words_trie_.remove(characters);
+        a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckEast(a_single_puzzle, row, col,
                     characters)) {  // if the word is found east
-        a_single_puzzle.words_trie_.remove(characters);
+        a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckWest(a_single_puzzle, row, col,
                     characters)) {  // if the word is found west
-        a_single_puzzle.words_trie_.remove(characters);
+        a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckNorthEast(a_single_puzzle, row, col,
                          characters)) {  // if the word is found northeast
-        a_single_puzzle.words_trie_.remove(characters);
+        a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckNorthWest(a_single_puzzle, row, col,
                          characters)) {  // if the word is found northwest
-        a_single_puzzle.words_trie_.remove(characters);
+        a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckSouthEast(a_single_puzzle, row, col,
                          characters)) {  // if the word is found southeast
-        a_single_puzzle.words_trie_.remove(characters);
+        a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckSouthWest(a_single_puzzle, row, col,
                          characters)) {  // if the word is found southwest
-        a_single_puzzle.words_trie_.remove(characters);
+        a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
     }
@@ -261,6 +283,7 @@ bool Puzzle::CheckNorth(Puzzle& a_single_puzzle, int row, int col, std::vector<c
   // Check validity of coordinate
   if (row < 0) return false; // when going up the row number decreases
   characters.push_back(a_single_puzzle.puzzle_[row][col]); // when checking words use the puzzle variable
+  char temp = a_single_puzzle.solution_[row][col];
   a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
@@ -272,7 +295,9 @@ bool Puzzle::CheckNorth(Puzzle& a_single_puzzle, int row, int col, std::vector<c
     }
   }
   // at this point the word doesn't exist in the puzzle so undo the removal of the character
-  UndoRemoval(a_single_puzzle, row, col, characters);
+  a_single_puzzle.solution_[row][col] = temp;
+  characters.pop_back();
+  //UndoRemoval(a_single_puzzle, row, col, characters);
   return false; // this triggers back tracking
 }
 
@@ -280,6 +305,7 @@ bool Puzzle::CheckSouth(Puzzle& a_single_puzzle, int row, int col, std::vector<c
 // Check validity of coordinate
   if (row >= kPuzzleSize) return false; // when going up the row number increases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
+  char temp = a_single_puzzle.solution_[row][col];
   a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
@@ -291,7 +317,9 @@ bool Puzzle::CheckSouth(Puzzle& a_single_puzzle, int row, int col, std::vector<c
     }
   }
   // at this point the word doesn't exist in the puzzle so undo the removal of the character
-  UndoRemoval(a_single_puzzle, row, col, characters);
+  a_single_puzzle.solution_[row][col] = temp;
+  characters.pop_back();
+  //UndoRemoval(a_single_puzzle, row, col, characters);
   return false; // this triggers back tracking
 }
 
@@ -299,6 +327,7 @@ bool Puzzle::CheckEast(Puzzle& a_single_puzzle, int row, int col, std::vector<ch
 // Check validity of coordinate
   if (col >= kPuzzleSize) return false; // when going east the col number increases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
+  char temp = a_single_puzzle.solution_[row][col];
   a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
@@ -310,7 +339,9 @@ bool Puzzle::CheckEast(Puzzle& a_single_puzzle, int row, int col, std::vector<ch
     }
   }
   // at this point the word doesn't exist in the puzzle so undo the removal of the character
-  UndoRemoval(a_single_puzzle, row, col, characters);
+  a_single_puzzle.solution_[row][col] = temp;
+  characters.pop_back();
+  //UndoRemoval(a_single_puzzle, row, col, characters);
   return false; // this triggers back tracking
 }
 
@@ -318,6 +349,7 @@ bool Puzzle::CheckWest(Puzzle& a_single_puzzle, int row, int col, std::vector<ch
 // Check validity of coordinate
   if (col < 0) return false; // when going west the col number decreases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
+  char temp = a_single_puzzle.solution_[row][col];
   a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
@@ -329,7 +361,9 @@ bool Puzzle::CheckWest(Puzzle& a_single_puzzle, int row, int col, std::vector<ch
     }
   }
   // at this point the word doesn't exist in the puzzle so undo the removal of the character
-  UndoRemoval(a_single_puzzle, row, col, characters);
+  a_single_puzzle.solution_[row][col] = temp;
+  characters.pop_back();
+  //UndoRemoval(a_single_puzzle, row, col, characters);
   return false; // this triggers back tracking
 }
 
@@ -337,6 +371,7 @@ bool Puzzle::CheckNorthWest(Puzzle&a_single_puzzle, int row, int col, std::vecto
 // Check validity of coordinate
   if (row < 0 || col < 0) return false; // when going NW the row number decreases and col decreases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
+  char temp = a_single_puzzle.solution_[row][col];
   a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
@@ -348,7 +383,9 @@ bool Puzzle::CheckNorthWest(Puzzle&a_single_puzzle, int row, int col, std::vecto
     }
   }
   // at this point the word doesn't exist in the puzzle so undo the removal of the character
-  UndoRemoval(a_single_puzzle, row, col, characters);
+  a_single_puzzle.solution_[row][col] = temp;
+  characters.pop_back();
+  //UndoRemoval(a_single_puzzle, row, col, characters);
   return false; // this triggers back tracking
 }
 
@@ -356,6 +393,7 @@ bool Puzzle::CheckNorthEast(Puzzle& a_single_puzzle, int row, int col, std::vect
 // Check validity of coordinate
   if (row < 0 || col >= kPuzzleSize) return false; // when going ne the row number decreases and col increases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
+  char temp = a_single_puzzle.solution_[row][col];
   a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
@@ -367,7 +405,9 @@ bool Puzzle::CheckNorthEast(Puzzle& a_single_puzzle, int row, int col, std::vect
     }
   }
   // at this point the word doesn't exist in the puzzle so undo the removal of the character
-  UndoRemoval(a_single_puzzle, row, col, characters);
+  a_single_puzzle.solution_[row][col] = temp;
+  characters.pop_back();
+  //UndoRemoval(a_single_puzzle, row, col, characters);
   return false; // this triggers back tracking
 }
 
@@ -375,6 +415,7 @@ bool Puzzle::CheckSouthWest(Puzzle& a_single_puzzle, int row, int col, std::vect
 // Check validity of coordinate
   if (row >= kPuzzleSize || col < 0) return false; // when going sw the row number increases and col decreases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
+  char temp = a_single_puzzle.solution_[row][col];
   a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
@@ -386,7 +427,9 @@ bool Puzzle::CheckSouthWest(Puzzle& a_single_puzzle, int row, int col, std::vect
     }
   }
   // at this point the word doesn't exist in the puzzle so undo the removal of the character
-  UndoRemoval(a_single_puzzle, row, col, characters);
+  a_single_puzzle.solution_[row][col] = temp;
+  characters.pop_back();
+  //UndoRemoval(a_single_puzzle, row, col, characters);
   return false; // this triggers back tracking
 }
 
@@ -394,6 +437,7 @@ bool Puzzle::CheckSouthEast(Puzzle& a_single_puzzle, int row, int col, std::vect
 // Check validity of coordinate
   if (row >= kPuzzleSize || col >= kPuzzleSize) return false; // when going se the row number increases and col increases
   characters.push_back(a_single_puzzle.puzzle_[row][col]);
+  char temp = a_single_puzzle.solution_[row][col];
   a_single_puzzle.solution_[row][col] = '.'; // temporarily removes the character
   if (a_single_puzzle.words_trie_.check(characters)) { // if the word exists in trie
     // At this point thus far the characters do belong in the trie and hold potential
@@ -405,7 +449,9 @@ bool Puzzle::CheckSouthEast(Puzzle& a_single_puzzle, int row, int col, std::vect
     }
   }
   // at this point the word doesn't exist in the puzzle so undo the removal of the character
-  UndoRemoval(a_single_puzzle, row, col, characters);
+  a_single_puzzle.solution_[row][col] = temp;
+  characters.pop_back();
+  //UndoRemoval(a_single_puzzle, row, col, characters);
   return false; // this triggers back tracking
 }
 } // namespace wordsearch

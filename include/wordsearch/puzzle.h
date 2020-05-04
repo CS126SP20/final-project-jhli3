@@ -43,7 +43,11 @@ class Puzzle {
   void PrintSolution();
   // Pretty prints out puzzle
   void PrintPuzzle();
-  void Remove(std::vector<char> word);
+  // Removes word from trie
+  void RemoveWord(std::vector<char> word);
+
+  void RemoveWord(Trie<char>& trie, std::vector<char> word);
+
 
   // ------------ Methods for solving puzzle ------------
   // Wrapper method for Solve
