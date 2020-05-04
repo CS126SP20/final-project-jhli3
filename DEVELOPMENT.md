@@ -28,4 +28,7 @@
 ###### 5/02/2020
 - Wrote helper methods to search for words in 8 cardinal directions
 - Wrote tests for these direction search methods as well as other helper methods
+
+###### 5/03/2020
+- Debugged backtracking algorithm
 ---
