@@ -78,17 +78,15 @@ void Puzzle::CreateWordListVector(std::string& words, std::vector<std::string>& 
 bool Puzzle::IsTrieEmpty() {
   // Check for every letter in the alphabet - if all of them are empty nodes
   // then return true
-  bool IsEmpty = true;
   std::vector<char> letter;
   for (char c : alphabet) {
     letter.push_back(c);
-    if (words_trie_.check(letter)) {
-      IsEmpty = false; // trie can't be empty since there's a "word" in it
-      break; // no need to continue looping if this is the case
+    if (this->words_trie_.check(letter)) {
+      return false; // trie can't be empty since there's a "word" in it
     }
-    letter.clear(); // clear the letter out
+    letter.pop_back(); // clear the letter out
   }
-  return IsEmpty;
+  return true;
 }
 
 // --------- Methods to help with testing ---------
@@ -163,7 +161,7 @@ void Puzzle::RemoveWord(std::vector<char> word) {
   // word is the full word we want to remove
   // we need to work backwards and do a series of checks in the trie
   // use IsFullWord to check if there are branches
-  while (IsFullWord(this->words_trie_, word)) { // while there are no branches
+  while (word.size() != 0 && IsFullWord(this->words_trie_, word)) { // while there are no branches
     this->words_trie_.remove(word); // remove that word
     word.pop_back(); // remove last letter and check again for branches
   }
@@ -173,7 +171,7 @@ void Puzzle::RemoveWord(Trie<char>& trie, std::vector<char> word) {
   // word is the full word we want to remove
   // we need to work backwards and do a series of checks in the trie
   // use IsFullWord to check if there are branches
-  while (IsFullWord(trie, word)) { // while there are no branches
+  while (word.size() != 0 && IsFullWord(trie, word)) { // while there are no branches
     trie.remove(word); // remove that word
     word.pop_back(); // remove last letter and check again for branches
   }
@@ -205,47 +203,64 @@ bool Puzzle::Solve(Puzzle& a_single_puzzle, int row, int col) {
     // Consider 8 directions for one square of the grid if one direction is true then run the same direction algorithm
       if (CheckNorth(a_single_puzzle, row, col,
                      characters)) {  // if the word is found north
+        std::string s(characters.begin(), characters.end());
+        std::cout << s << std::endl;
         a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckSouth(a_single_puzzle, row, col,
                      characters)) {  // if the word is found south
+        std::string s(characters.begin(), characters.end());
+        std::cout << s << std::endl;
         a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckEast(a_single_puzzle, row, col,
                     characters)) {  // if the word is found east
+        std::string s(characters.begin(), characters.end());
+        std::cout << s << std::endl;
         a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckWest(a_single_puzzle, row, col,
                     characters)) {  // if the word is found west
+        std::string s(characters.begin(), characters.end());
+        std::cout << s << std::endl;
         a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckNorthEast(a_single_puzzle, row, col,
                          characters)) {  // if the word is found northeast
+        std::string s(characters.begin(), characters.end());
+        std::cout << s << std::endl;
         a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckNorthWest(a_single_puzzle, row, col,
                          characters)) {  // if the word is found northwest
+        std::string s(characters.begin(), characters.end());
+        std::cout << s << std::endl;
         a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckSouthEast(a_single_puzzle, row, col,
                          characters)) {  // if the word is found southeast
+        std::string s(characters.begin(), characters.end());
+        std::cout << s << std::endl;
         a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
       if (CheckSouthWest(a_single_puzzle, row, col,
                          characters)) {  // if the word is found southwest
+        std::string s(characters.begin(), characters.end());
+        std::cout << s << std::endl;
         a_single_puzzle.RemoveWord(characters);
       }
       characters.clear();
     }
   // Move onto next square on grid
   std::tuple<int, int> next = FindNextCharacter(row, col);
+  std::cout << row << " " << col << std::endl;
   if (Solve(a_single_puzzle, std::get<0>(next), std::get<1>(next))) return true; // all words are eventually found
   return false; // a word wasn't found at this square on grid
 }
@@ -254,7 +269,7 @@ std::tuple<int, int> Puzzle::FindNextCharacter(int row, int col) {
   if (row <= kPuzzleSize - 1 && col < kPuzzleSize - 1) {
     // you're in the middle of a row but not the end of the column
     return std::make_tuple(row, col + 1);
-  } else if (row < kPuzzleSize - 1 && col == kPuzzleSize - 1) {
+  } else if (row <= kPuzzleSize - 1 && col == kPuzzleSize - 1) {
     // you've reached the end of a row
     return std::make_tuple(row + 1, 0);
   } else {

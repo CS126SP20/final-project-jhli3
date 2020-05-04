@@ -83,10 +83,10 @@ void MyApp::TestSolver() {
   wordsearch::Parser parser;
   std::string file_name = "/Users/white/Cinder/my-projects/final-project-jhli3/data/wordsearch.spf";
   wordsearch::Puzzle my_puzzle = parser.ParseFile(file_name);
-  my_puzzle.Solve(my_puzzle, 0, 0);
-//  my_puzzle.PrintPuzzle();
-//  std::cout << std::endl << std::endl;
-//  my_puzzle.PrintSolution();
+  my_puzzle.Solve(my_puzzle);
+  my_puzzle.PrintPuzzle();
+  std::cout << std::endl << std::endl;
+  my_puzzle.PrintSolution();
 }
 
 }  // namespace myapp
