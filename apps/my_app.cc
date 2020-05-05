@@ -11,6 +11,8 @@
 
 #include "wordsearch/parser.h"
 
+#include <math.h>
+
 using cinder::Color;
 using cinder::ColorA;
 using cinder::Rectf;
@@ -19,11 +21,15 @@ using cinder::app::KeyEvent;
 using std::string;
 
 namespace myapp {
-const char kNormalFont[] = "Courier";
+const char kNormalFont[] = "Helvetica";
 
 using cinder::app::KeyEvent;
 
-MyApp::MyApp() {}
+MyApp::MyApp() {
+  IsValidFile_ = false;
+  IsSolutionFound_ = false;
+  ShowSolution_ = false;
+}
 
 void MyApp::setup() {
   TestSolver();  // Run set up with puzzle and solve
@@ -42,6 +48,7 @@ void MyApp::draw() {
     } else {
       DrawPuzzle();
     }
+    DrawWordBank();
   } else {  // display error message that solution wasn't found
     Print("Solution not found.");
   }
@@ -65,7 +72,7 @@ void MyApp::PrintText(const string& text, const cinder::Color& color,
 
   auto box = TextBox()
                  .alignment(TextBox::CENTER)
-                 .font(cinder::Font(kNormalFont, 30))
+                 .font(cinder::Font(kNormalFont, 20))
                  .size(size)
                  .color(color)
                  .backgroundColor(ColorA(0, 0, 0, 0))
@@ -76,20 +83,6 @@ void MyApp::PrintText(const string& text, const cinder::Color& color,
   const auto surface = box.render();
   const auto texture = cinder::gl::Texture::create(surface);
   cinder::gl::draw(texture, locp);
-}
-
-// Just a method to test the formatting function of string with fmt
-void MyApp::PrintSampleTest() {
-  // Setting some variable to print the text
-  const Color color = Color::white();
-  const cinder::vec2 center = getWindowCenter();
-  const cinder::ivec2 size = {500, 500};
-
-  // sample text testing fmt
-  // std::string message = fmt::format("The answer is {}", 42);
-  std::string message = fmt::format("Hello");
-
-  PrintText(message, color, size, center);
 }
 
 // Wrapper method for printing
@@ -111,7 +104,7 @@ void MyApp::DrawPuzzle() {
   int counter = 0;
   size_t x_placement = 0;
   size_t y_placement = 0;
-  std::string letter = "";
+  std::string letter;
   for (int row = 0; row < kPuzzleSize; row++) {
     for (int col = 0; col < kPuzzleSize; col++) {
       letter += puzzle_.at(counter);
@@ -136,7 +129,7 @@ void MyApp::DrawSolution() {
   int counter = 0;
   size_t x_placement = 0;
   size_t y_placement = 0;
-  std::string letter = "";
+  std::string letter;
   for (int row = 0; row < kPuzzleSize; row++) {
     for (int col = 0; col < kPuzzleSize; col++) {
       if (puzzle_.at(counter) != solution_.at(counter)) {
@@ -157,12 +150,32 @@ void MyApp::DrawSolution() {
   }
 }
 
+void MyApp::DrawWordBank() {
+  int y_placement = 0;
+  int x_placement = 0;
+  const cinder::vec2 center = getWindowCenter();
+  const cinder::ivec2 size = {800, 50};
+  const Color white = Color::white();
+
+  int _x = center.x - 250;
+  int _y = center.y + 225;
+
+  for (std::string word: words_) {
+    PrintText(word, white, size, {_x, _y});
+    _y += 35;
+    if (_y > kWindowHeight) {
+      _y = center.y + 225;
+      _x += kPuzzleSize + 100;
+    }
+  }
+}
+
 
 void MyApp::TestSolver() {
   wordsearch::Parser parser;
   std::string file_name =
               "/Users/white/Cinder/my-projects/final-project-jhli3/data/"
-              "wordsearch.spf";
+              "wordsearch3.spf";
   if (parser.ParseFile(file_name)) {  // if file parsing is sucessful
     IsValidFile_ = true;
     wordsearch::Puzzle my_puzzle = parser.GetPuzzle(); // create puzzle
@@ -170,12 +183,8 @@ void MyApp::TestSolver() {
       IsSolutionFound_ = true;
       puzzle_ = my_puzzle.GetPuzzle();
       solution_ = my_puzzle.GetSolution();
-      my_puzzle.PrintSolution();
-    } else {
-      IsSolutionFound_ = false;
+      words_ = my_puzzle.GetWordsVector();
     }
-  } else {
-    IsValidFile_ = false;
   }
 }
 

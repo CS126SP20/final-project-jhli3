@@ -7,10 +7,6 @@
 using std::cout;
 
 namespace wordsearch {
-// constant header
-std::string const kHeader = "#spf1.0";
-int const kFileSize = 3;
-int const kCharacterSize = 1;
 
 // Runs the parsing of the file
 bool Parser::ParseFile(std::string& file_name) {
@@ -134,7 +130,7 @@ bool Parser::IsAllLetters(std::string& line) {
 
 bool Parser::IsWordListValid(std::vector<std::string>& words) {
   // if there are no words or too many words
-  if (words.empty() || words.size() > 30) {
+  if (words.empty() || words.size() > kMaxWords) {
     cout << "Invalid number of words";
     return false;
   }

@@ -35,14 +35,13 @@ void Puzzle::CreatePuzzleGrid(std::string& puzzle) {
 // Creates trie of words to be found in puzzle
 // each word needs to be split into a vector
 void Puzzle::CreateTrie(std::string& words) {
-  std::vector<std::string> words_list;
-  CreateWordListVector(words, words_list);
+  CreateWordListVector(words, words_vector_);
 
   // Create new trie
   Trie<char> temp;
 
   // add each word into trie
-  for (std::string word : words_list) {
+  for (std::string word : words_vector_) {
     // each word has a vector to it
     // code derived from:
     // https://www.techiedelight.com/convert-string-vector-chars-cpp/
@@ -168,6 +167,11 @@ std::string Puzzle::GetPuzzle() {
     }
     return puzzle;
 }
+
+std::vector<std::string>& Puzzle::GetWordsVector() {
+  return words_vector_;
+}
+
 
 // Removes word from trie
 // To respect the original words that were inputted and not the combination of

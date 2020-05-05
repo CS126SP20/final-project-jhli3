@@ -12,12 +12,10 @@ using cinder::app::RendererGl;
 namespace myapp {
 
 const int kSamples = 8;
-const int kWidth = 800;
-const int kHeight = 800;
 
 void SetUp(App::Settings* settings) {
-  settings->setWindowSize(kWidth, kHeight);
-  settings->setTitle("My CS 126 Application");
+  settings->setWindowSize(kWindowWidth, kWindowHeight);
+  settings->setTitle("Word Search Solver");
 }
 
 }  // namespace myapp

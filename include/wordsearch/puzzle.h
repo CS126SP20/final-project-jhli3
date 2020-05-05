@@ -13,6 +13,10 @@
 #include "trie/trie.h"
 
 constexpr size_t kPuzzleSize = 15;
+std::string const kHeader = "#spf1.0";
+constexpr size_t kFileSize = 3;
+constexpr size_t kCharacterSize = 1;
+constexpr size_t kMaxWords = 30;
 
 namespace wordsearch {
 class Puzzle {
@@ -23,6 +27,8 @@ class Puzzle {
   char solution_ [kPuzzleSize][kPuzzleSize]{};
   // Trie structure representing list of words to be found
   Trie<char> words_trie_;
+  // Vector of words - used for cinder terminal display
+  std::vector<std::string> words_vector_;
 
   // Fill 2d grid with letters of the puzzle
   void CreatePuzzleGrid(std::string& puzzle);
@@ -45,6 +51,7 @@ class Puzzle {
   // Pretty prints out puzzle
   void PrintPuzzle();
   std::string GetPuzzle();
+  std::vector<std::string>& GetWordsVector();
 
   // ------------ Methods for solving puzzle ------------
   // Wrapper method for Solve

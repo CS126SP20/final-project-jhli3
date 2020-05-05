@@ -5,6 +5,8 @@
 
 #include <cinder/app/App.h>
 
+const int kWindowWidth = 800;
+const int kWindowHeight = 800;
 
 namespace myapp {
 
@@ -19,19 +21,20 @@ class MyApp : public cinder::app::App {
  private:
   void PrintText(const std::string& text, const cinder::Color& color, const cinder::ivec2& size,
                  const cinder::vec2& loc);
-  void PrintSampleTest();
   void TestSolver();
   void Print(std::string text);
   void DrawPuzzle();
   void DrawSolution();
+  void DrawWordBank();
 
 
  private:
   std::string puzzle_;
   std::string solution_;
-  bool IsValidFile_;
-  bool IsSolutionFound_;
-  bool ShowSolution_;
+  bool IsValidFile_{};
+  bool IsSolutionFound_{};
+  bool ShowSolution_{};
+  std::vector<std::string> words_;
 };
 
 }  // namespace myapp
