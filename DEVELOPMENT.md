@@ -31,4 +31,7 @@
 
 ###### 5/03/2020
 - Debugged backtracking algorithm
+
+###### 5/05/2020
+- Wrote code to display puzzle, solution, and word bank in cinder terminal
 ---
