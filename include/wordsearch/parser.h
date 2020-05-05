@@ -17,6 +17,7 @@ class Parser {
  private:
   // board size
   int const kPuzzleSize = 15;
+  Puzzle NewPuzzle_;
 
   // Checks that file exists
   bool DoesFileExist(std::string& file_name);
@@ -39,10 +40,11 @@ class Parser {
 
  public:
   // Runs the parsing of the file
-  Puzzle ParseFile(std::string& file_name);
+  bool ParseFile(std::string& file_name);
   // For testing purposes
   // Runs the parsing of the file
   void ParseFileTester(std::string& file_name, std::ostream& cout = std::cout);
+  Puzzle GetPuzzle();
 };
 }  // namespace wordsearch
 

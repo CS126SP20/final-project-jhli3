@@ -216,34 +216,6 @@ TEST_CASE("IsFullWord test", "[direction][trie]") {
   REQUIRE_FALSE(puzzle.IsFullWord(trie, partial_word));
 }
 
-TEST_CASE("RemovesCharacter test", "[direction][grid]") {
-  std::string puzzle_string =
-      "EKOMOORHSUMEGHW"
-      "HLBKDKKUFHESOXF"
-      "LNPRTUSGMAWUPDG"
-      "WSIPVLAHAICOBBH"
-      "BBPVAAXIQXOHTNF"
-      "UZPTOPVZHNAVOIY"
-      "GKUUGVRYRFRVQVS"
-      "FBTMRTVEEACLCYI"
-      "XNUWIMORPWASHRK"
-      "AGFRTRGVUOCYOYZ"
-      "NOCICEPAOWUBVBK"
-      "ZHLEAAJTWNNRZLB"
-      "MWMGFUREUYJLMWY"
-      "WXCATUUUDRYIQUB"
-      "WPIEQIJOAQEBZVS";
-  std::string words = "BUG";
-  wordsearch::Puzzle puzzle(puzzle_string, words);
-  puzzle.ChangeCharacter(4, 0, '.'); // manually remove a value
-  REQUIRE(puzzle.GetCharacter(4,0) == '.'); // check that it's been properly removed
-
-  std::vector<char> word {'A','B'};
-  puzzle.UndoRemoval(puzzle, 4, 0, word);
-  REQUIRE(puzzle.GetCharacter(4,0) == 'B'); // Check that character has been restored
-  REQUIRE(word.size() == 1); // Check that character is no longer in vector
-}
-
 TEST_CASE("Direction checks tests", "[direction]") {
   std::string puzzle_string =
       "EKOMOORHSUMEGHW" //0

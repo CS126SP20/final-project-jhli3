@@ -41,17 +41,14 @@ class Puzzle {
   bool IsTrieEmpty();
   // Pretty prints out solution
   void PrintSolution();
+  std::string GetSolution();
   // Pretty prints out puzzle
   void PrintPuzzle();
-  // Removes word from trie
-  void RemoveWord(std::vector<char> word);
-
-  void RemoveWord(Trie<char>& trie, std::vector<char> word);
-
+  std::string GetPuzzle();
 
   // ------------ Methods for solving puzzle ------------
   // Wrapper method for Solve
-  void Solve(Puzzle& a_single_puzzle);
+  bool Solve(Puzzle& a_single_puzzle);
   // Method for solving a puzzle has a vector of chars to keep track of characters
   // found
   bool Solve(Puzzle& a_single_puzzle, int row, int col);
@@ -68,10 +65,10 @@ class Puzzle {
   bool CheckSouthWest(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters);
   bool CheckSouthEast(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters);
 
-  // Undo the removal of a character from the board during back tracking
-  void UndoRemoval(Puzzle& a_single_puzzle, int row, int col, std::vector<char>& characters);
   // Checks if current word is the full word within a trie
   bool IsFullWord(Trie<char>& trie, std::vector<char>& word);
+  // Removes word from trie
+  void RemoveWord(std::vector<char> word);
 
   // ------------ Methods to help with testing ------------
   // Fill 2d grid with letters of the puzzle
@@ -80,6 +77,8 @@ class Puzzle {
   static void CreateTrie(std::string& words_list, Trie<char>& words_trie);
   // Creates vectors of word list
   static void CreateWordListVector(std::string& word_list, std::vector<std::string>& words_vec);
+  // Removes word from trie
+  void RemoveWord(Trie<char>& trie, std::vector<char> word);
 };
 } // namespace wordsearch
 #endif  // FINALPROJECT_PUZZLE_H

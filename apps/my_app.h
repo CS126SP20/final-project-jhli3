@@ -20,8 +20,18 @@ class MyApp : public cinder::app::App {
   void PrintText(const std::string& text, const cinder::Color& color, const cinder::ivec2& size,
                  const cinder::vec2& loc);
   void PrintSampleTest();
-  void TestParser();
   void TestSolver();
+  void Print(std::string text);
+  void DrawPuzzle();
+  void DrawSolution();
+
+
+ private:
+  std::string puzzle_;
+  std::string solution_;
+  bool IsValidFile_;
+  bool IsSolutionFound_;
+  bool ShowSolution_;
 };
 
 }  // namespace myapp
