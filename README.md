@@ -7,6 +7,7 @@ This program utilizes backtracking and tries to solve a word search puzzles. The
 
 ### How to use
 ####File 
+
 Import a .spf file into the data folder with your word search puzzle. Make sure the puzzle has the following in a separate line:
 * Begins with #spf1.0 header
 * Word search as one string
@@ -17,6 +18,7 @@ Some important notes
 * Case does not matter in the file however everything will be standardized to uppercase.
 
 ####Solving the puzzle
+
 To solve the puzzle go into my_app.cc and change the file_name_ to the name of your puzzle file. Then run the program. The Cinder terminal will default show just the puzzle and word bank. Press return to view the solutions or to revert back to the puzzle.
 
 ### External Library
