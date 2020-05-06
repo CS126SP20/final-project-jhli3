@@ -19,14 +19,19 @@ class MyApp : public cinder::app::App {
   void keyDown(cinder::app::KeyEvent) override;
 
  private:
+  // Prints text in cinder terminal
   void PrintText(const std::string& text, const cinder::Color& color, const cinder::ivec2& size,
                  const cinder::vec2& loc);
-  void TestSolver();
+  // Wrapper function for simply printing text in terminal
   void Print(std::string text);
+  // Creates puzzle from file and solves puzzle
+  void RunSolver();
+  // Draws puzzle in terminal
   void DrawPuzzle();
+  // Draws solution in terminal
   void DrawSolution();
+  // Draws word bank in terminal
   void DrawWordBank();
-
 
  private:
   std::string puzzle_;

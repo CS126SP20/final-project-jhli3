@@ -7,7 +7,6 @@
 using std::cout;
 
 namespace wordsearch {
-
 // Runs the parsing of the file
 bool Parser::ParseFile(std::string& file_name) {
   // Checks that file exists
@@ -22,19 +21,23 @@ bool Parser::ParseFile(std::string& file_name) {
       cout << "Puzzle created" << std::endl;
       NewPuzzle_ =  Puzzle(file_lines.at(1), file_lines.at(2));
       return true;
-    } else {
+    } else { // file is found to be invalid
       cout << "This is an invalid file";
       return false;
     }
-  } else {
+  } else { // file doesn't exist
     cout << "This is an invalid file";
     return false;
   }
 }
 
-Puzzle Parser::GetPuzzle() {
+// Returns a reference to the newly created puzzle
+Puzzle& Parser::GetPuzzle() {
   return NewPuzzle_;
 }
+
+// ------------- Helper methods -------------
+
 // Checks that file exists
 // code below derived in part from:
 // https://stackoverflow.com/questions/1647557/ifstream-how-to-tell-if-specified-file-doesnt-exist
@@ -61,8 +64,8 @@ void Parser::SplitTextLines(std::string& file_name, std::vector<std::string>& li
     lines.push_back(line); // add line to vector
     line.clear(); // clear the line
   }
-  //std::cout << "There's something wrong with the stream";
 }
+
 // Checks if file is valid
 // A file is valid if it has a header, has a 15 x 15 puzzle,
 // and max 30 words
@@ -79,6 +82,7 @@ bool Parser::IsFileValid(std::vector<std::string>& lines) {
   }
   return true;
 }
+
 // Checks that puzzles are of valid format
 // everything is of correct length and amount
 // all characters are letters, capitalization does not matter
@@ -108,7 +112,6 @@ bool Parser::IsPuzzleValid(std::string& wordsearch, std::string& words) {
     words_list.emplace_back(token);
     token = std::strtok(nullptr, " ");
   }
-  //cout << "Word list size " << words_list.size() << std::endl;
   if (!IsWordListValid(words_list)) { // passes word list to check for validity
     cout << "A word isn't only letters";
     return false;

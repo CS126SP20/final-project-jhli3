@@ -194,6 +194,7 @@ TEST_CASE("CreatePuzzle test", "[puzzle]") {
   wordsearch::Puzzle::CreatePuzzleGrid(puzzle_string, grid);
   for (int row = 0; row < kPuzzleSize; row++) {
     for (int col = 0; col < kPuzzleSize; col++) {
+      // Check that each character in the grid matches
       REQUIRE(grid[row][col] == correct_grid[row][col]);
     }
   }
@@ -248,6 +249,8 @@ TEST_CASE("Direction checks tests", "[direction]") {
   std::vector<char> characters;
   wordsearch::Puzzle puzzle(puzzle_string, words);
 
+  // Check each direction properly finds a word and that other directions fail
+  // unless specified otherwise
   SECTION("North") {
     REQUIRE(puzzle.CheckNorth(puzzle, 4, 0, characters) == true);
     characters.clear();
@@ -442,36 +445,4 @@ TEST_CASE("Solver test", "[direction][solve]") {
   wordsearch::Puzzle puzzle(puzzle_string, words);
   REQUIRE(puzzle.Solve(puzzle, 0, 0) == true);
   REQUIRE(puzzle.IsTrieEmpty() == true);
-//  ". K O . . . . . . . . . G H W"
-//  "H . B K . K K U F H E . O X F"
-//  "L N . . T U S G M A W . P D G"
-//  "W S . . V L A H A I C . B B H"
-//  "D . P V . A X I Q X O . T N F"
-//  "H Z P T O P V Z H N A V O I Y"
-//  "J K U U G V R Y R F R V Q V S"
-//  "F B T M R T V E E A C L C Y I"
-//  "X N U W I M O R P W A S H R K"
-//  "A G F R T R G V U O C Y O Y Z"
-//  "N O C I . E P A O W U B V B K"
-//  "Z H L E A . J T W N N R Z L B"
-//  "M W M G F U . E U Y J L M W Y"
-//  "W X . . . U U U D R Y I Q U B"
-//  "W P I E Q I J O A Q E B Z V S"
-
-
-//  E K O M O O R H S U M E G H W
-//  H L B K D K K U F H E S O X F
-//  L N P R T U S G M A W U P D G
-//  W S I P V L A H A I C O B B H
-//  D B P V A A X I Q X O H T N F
-//  H Z P T O P V Z H N A V O I Y
-//  J K U U G V R Y R F R V Q V S
-//  F B T M R T V E E A C L C Y I
-//  X N U W I M O R P W A S H R K
-//  A G F R T R G V U O C Y O Y Z
-//  N O C I C E P A O W U B V B K
-//  Z H L E A A J T W N N R Z L B
-//  M W M G F U R E U Y J L M W Y
-//  W X C A T U U U D R Y I Q U B
-//  W P I E Q I J O A Q E B Z V S
 }

@@ -9,7 +9,6 @@
 #include <vector>
 #include <iostream>
 
-#include "solver.h"
 #include "trie/trie.h"
 
 constexpr size_t kPuzzleSize = 15;
@@ -30,27 +29,28 @@ class Puzzle {
   // Vector of words - used for cinder terminal display
   std::vector<std::string> words_vector_;
 
+  // ------------ Methods for setting up puzzle ------------
   // Fill 2d grid with letters of the puzzle
   void CreatePuzzleGrid(std::string& puzzle);
   // Creates trie of words to be found in puzzle
   void CreateTrie(std::string& words_list);
 
  public:
+  // Regular constructor used for testing to access non-static methods
   Puzzle();
   // Overloaded constructor
   explicit Puzzle(std::string& puzzle, std::string& words);
-  // Allows the altering of the grid
-  void ChangeCharacter(int row, int col, char value);
-  // Retrieve character in puzzle grid
-  char GetCharacter(int row, int col);
   // checks if trie is empty
   bool IsTrieEmpty();
   // Pretty prints out solution
   void PrintSolution();
+  // Returns string representation of solution
   std::string GetSolution();
   // Pretty prints out puzzle
   void PrintPuzzle();
+  // Returns string representation of puzzle
   std::string GetPuzzle();
+  // Returns reference to vector with word bank
   std::vector<std::string>& GetWordsVector();
 
   // ------------ Methods for solving puzzle ------------

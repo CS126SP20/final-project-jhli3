@@ -1,4 +1,5 @@
 # Development
+###Week 1
 ###### 4/19/2020
 - Edited project proposal
 - Linked fmt library 
@@ -8,6 +9,7 @@
 - Read on how trie data structure works
 - Looking back into fmt library linking
 
+###Week 2
 ###### 4/23/2020
 - Wrote methods in parser.cc to read in spf text file
 
@@ -21,6 +23,7 @@
 - Wrote trie tests to figure out how the trie structure worked
 - Wrote tests for Puzzle helper methods
 
+###Week 3
 ###### 4/29/2020
 - Read about backtracking specifically for word puzzles
 - Began planning algorithm for solving word search

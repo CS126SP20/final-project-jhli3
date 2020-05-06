@@ -11,8 +11,6 @@
 
 #include "wordsearch/parser.h"
 
-#include <math.h>
-
 using cinder::Color;
 using cinder::ColorA;
 using cinder::Rectf;
@@ -21,6 +19,7 @@ using cinder::app::KeyEvent;
 using std::string;
 
 namespace myapp {
+// Monospaced san serif font for easy readability
 const char kNormalFont[] = "Helvetica";
 
 using cinder::app::KeyEvent;
@@ -32,18 +31,18 @@ MyApp::MyApp() {
 }
 
 void MyApp::setup() {
-  TestSolver();  // Run set up with puzzle and solve
-  ShowSolution_ = false;
+  RunSolver();            // Run set up with puzzle and solve
+  ShowSolution_ = false;  // Default show puzzle
 }
 
 void MyApp::update() {}
 
 void MyApp::draw() {
   cinder::gl::clear();
-  if (!IsValidFile_) { // if file is invalid
+  if (!IsValidFile_) {  // if file is invalid
     Print("Invalid puzzle file.");
   } else if (IsSolutionFound_) {  // if a solution is found display it
-    if (ShowSolution_) {
+    if (ShowSolution_) {          // If toggled draw solution grid
       DrawSolution();
     } else {
       DrawPuzzle();
@@ -57,9 +56,9 @@ void MyApp::draw() {
 void MyApp::keyDown(KeyEvent event) {
   switch (event.getCode()) {
     case KeyEvent::KEY_RETURN: {
-      ShowSolution_ = !ShowSolution_;
       // if you're on puzzle, pressing return will show solution
       // if you're on solution, pressing return will revert back to puzzle
+      ShowSolution_ = !ShowSolution_;
     }
   }
 }
@@ -69,7 +68,6 @@ void MyApp::keyDown(KeyEvent event) {
 void MyApp::PrintText(const string& text, const cinder::Color& color,
                       const cinder::ivec2& size, const cinder::vec2& loc) {
   cinder::gl::color(color);
-
   auto box = TextBox()
                  .alignment(TextBox::CENTER)
                  .font(cinder::Font(kNormalFont, 20))
@@ -85,7 +83,7 @@ void MyApp::PrintText(const string& text, const cinder::Color& color,
   cinder::gl::draw(texture, locp);
 }
 
-// Wrapper method for printing
+// Wrapper method for printing error messages
 void MyApp::Print(std::string text) {
   // Setting some variable to print the text
   const Color color = Color::white();
@@ -95,8 +93,9 @@ void MyApp::Print(std::string text) {
   PrintText(text, color, size, center);
 }
 
-// Formatting for puzzle
+// Formatting for drawing puzzle grid
 void MyApp::DrawPuzzle() {
+  // Set up default variables to pass on later
   const cinder::vec2 center = getWindowCenter();
   const cinder::ivec2 size = {600, 50};
   const Color white = Color::white();
@@ -105,11 +104,13 @@ void MyApp::DrawPuzzle() {
   size_t x_placement = 0;
   size_t y_placement = 0;
   std::string letter;
+  // Iterate through every letter and draw out a grid
   for (int row = 0; row < kPuzzleSize; row++) {
     for (int col = 0; col < kPuzzleSize; col++) {
       letter += puzzle_.at(counter);
-      PrintText(letter, white, size, {center.x - 250 + (x_placement) * 35, center.y - 320
-                                                                           + (y_placement) * 35});
+      PrintText(letter, white, size,
+                {center.x - 250 + (x_placement)*35,
+                 center.y - 320 + (y_placement)*35});
       x_placement++;
       counter++;
       letter.clear();
@@ -119,17 +120,20 @@ void MyApp::DrawPuzzle() {
   }
 }
 
+// Formatting for drawing solution grid
 void MyApp::DrawSolution() {
+  // Set up default variables to pass on later
   const cinder::vec2 center = getWindowCenter();
   const cinder::ivec2 size = {600, 50};
   const Color white = Color::white();
-  const Color red = {1, 0, 0};// for found words
+  const Color red = {1, 0, 0};  // for found words
   Color color;
 
   int counter = 0;
   size_t x_placement = 0;
   size_t y_placement = 0;
   std::string letter;
+  // Iterate through every letter and draw out a grid
   for (int row = 0; row < kPuzzleSize; row++) {
     for (int col = 0; col < kPuzzleSize; col++) {
       if (puzzle_.at(counter) != solution_.at(counter)) {
@@ -139,8 +143,9 @@ void MyApp::DrawSolution() {
         color = white;
       }
       letter += puzzle_.at(counter);
-      PrintText(letter, color, size, {center.x - 250 + (x_placement) * 35, center.y - 320
-      + (y_placement) * 35});
+      PrintText(letter, color, size,
+                {center.x - 250 + (x_placement)*35,
+                 center.y - 320 + (y_placement)*35});
       x_placement++;
       counter++;
       letter.clear();
@@ -150,9 +155,9 @@ void MyApp::DrawSolution() {
   }
 }
 
+// Formatting for drawing word bank
 void MyApp::DrawWordBank() {
-  int y_placement = 0;
-  int x_placement = 0;
+  // Set up default variables to pass on later
   const cinder::vec2 center = getWindowCenter();
   const cinder::ivec2 size = {800, 50};
   const Color white = Color::white();
@@ -160,32 +165,34 @@ void MyApp::DrawWordBank() {
   int _x = center.x - 250;
   int _y = center.y + 225;
 
-  for (std::string word: words_) {
+  // Iterate through words in vector and print out into columns
+  for (std::string word : words_) {
     PrintText(word, white, size, {_x, _y});
     _y += 35;
-    if (_y > kWindowHeight) {
+    if (_y > kWindowHeight - 20) {
       _y = center.y + 225;
       _x += kPuzzleSize + 100;
     }
   }
 }
 
-
-void MyApp::TestSolver() {
+// Create and Solve wordsearch
+void MyApp::RunSolver() {
   wordsearch::Parser parser;
   std::string file_name =
-              "/Users/white/Cinder/my-projects/final-project-jhli3/data/"
-              "wordsearch3.spf";
+      "/Users/white/Cinder/my-projects/final-project-jhli3/data/"
+      "wordsearch3.spf";
   if (parser.ParseFile(file_name)) {  // if file parsing is sucessful
     IsValidFile_ = true;
-    wordsearch::Puzzle my_puzzle = parser.GetPuzzle(); // create puzzle
-    if (my_puzzle.Solve(my_puzzle)) { // if puzzle is solveable set up puzzle and solution
+    wordsearch::Puzzle my_puzzle = parser.GetPuzzle();  // create puzzle
+    if (my_puzzle.Solve(
+            my_puzzle)) {  // if puzzle is solveable set up puzzle and solution
       IsSolutionFound_ = true;
+      // Set variables based on puzzle solving completion
       puzzle_ = my_puzzle.GetPuzzle();
       solution_ = my_puzzle.GetSolution();
       words_ = my_puzzle.GetWordsVector();
     }
   }
 }
-
 }  // namespace myapp

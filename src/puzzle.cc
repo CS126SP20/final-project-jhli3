@@ -5,10 +5,13 @@
 #include <wordsearch/puzzle.h>
 
 namespace wordsearch {
+// Vector of the alphabet
 std::vector<char> alphabet = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
                               'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
                               'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-Puzzle::Puzzle() {}
+
+// This constructor is only used in testing
+Puzzle::Puzzle() = default;
 
 // Overloaded constructor
 Puzzle::Puzzle(std::string& puzzle, std::string& words) {
@@ -25,6 +28,7 @@ void Puzzle::CreatePuzzleGrid(std::string& puzzle) {
   // iterates through 2d array
   for (int row = 0; row < kPuzzleSize; row++) {
     for (int col = 0; col < kPuzzleSize; col++) {
+      // standardizes all letters to upper case
       puzzle_[row][col] = toupper(puzzle.at(char_counter));
       solution_[row][col] = toupper(puzzle.at(char_counter));
       char_counter++;
@@ -35,26 +39,23 @@ void Puzzle::CreatePuzzleGrid(std::string& puzzle) {
 // Creates trie of words to be found in puzzle
 // each word needs to be split into a vector
 void Puzzle::CreateTrie(std::string& words) {
+  // Separate words string into a vector of words
   CreateWordListVector(words, words_vector_);
-
-  // Create new trie
-  Trie<char> temp;
-
   // add each word into trie
   for (std::string word : words_vector_) {
     // each word has a vector to it
     // code derived from:
     // https://www.techiedelight.com/convert-string-vector-chars-cpp/
     std::vector<char> word_vec(word.begin(), word.end());
-    for (char c : word_vec) {
-      toupper(c);
+    for (char c : word_vec) {  // iterate through each character of a word
+      toupper(c);              // standardize it to uppercase
     }
-    temp.add(word_vec);
+    words_trie_.add(word_vec);  // add the word to trie
     word_vec.clear();
   }
-  words_trie_ = temp;
 }
 
+// Creates a vector of words based on a string of words
 void Puzzle::CreateWordListVector(std::string& words,
                                   std::vector<std::string>& words_list) {
   // convert list of words into a char array
@@ -84,120 +85,6 @@ bool Puzzle::IsTrieEmpty() {
     letter.pop_back();  // clear the letter out
   }
   return true;
-}
-
-// --------- Methods to help with testing ---------
-void Puzzle::CreatePuzzleGrid(std::string& puzzle,
-                              char grid[kPuzzleSize][kPuzzleSize]) {
-  // Keeps track of the character in the puzzle
-  int char_counter = 0;
-  // iterates through 2d array
-  for (int row = 0; row < kPuzzleSize; row++) {
-    for (int column = 0; column < kPuzzleSize; column++) {
-      grid[row][column] = toupper(puzzle.at(char_counter));
-      char_counter++;
-    }
-  }
-}
-// Creates trie of words to be found in puzzle
-void Puzzle::CreateTrie(std::string& words, Trie<char>& words_trie) {
-  std::vector<std::string> words_list;
-  CreateWordListVector(words, words_list);
-
-  // Create new trie
-  Trie<char> temp;
-
-  // add each word into trie
-  for (std::string word : words_list) {
-    // each word has a vector to it
-    // code derived from:
-    // https://www.techiedelight.com/convert-string-vector-chars-cpp/
-    std::vector<char> word_vec(word.begin(), word.end());
-    for (char c : word_vec) {
-      toupper(c);
-    }
-    temp.add(word_vec);
-    word_vec.clear();
-  }
-  words_trie = temp;
-}
-
-void Puzzle::ChangeCharacter(int row, int col, char value) {
-  solution_[row][col] = value;
-}
-
-char Puzzle::GetCharacter(int row, int col) { return solution_[row][col]; }
-
-// Pretty prints out solution
-void Puzzle::PrintSolution() {
-  for (int row = 0; row < kPuzzleSize; row++) {
-    for (int col = 0; col < kPuzzleSize; col++) {
-      std::cout << solution_[row][col] << " ";
-    }
-    std::cout << std::endl;
-  }
-}
-
-std::string Puzzle::GetSolution() {
-  std::string solution = "";
-  for (int row = 0; row < kPuzzleSize; row++) {
-    for (int col = 0; col < kPuzzleSize; col++) {
-        solution += solution_[row][col];
-    }
-  }
-  return solution;
-}
-
-// Pretty prints out puzzle
-void Puzzle::PrintPuzzle() {
-  for (int row = 0; row < kPuzzleSize; row++) {
-    for (int col = 0; col < kPuzzleSize; col++) {
-      std::cout << puzzle_[row][col] << " ";
-    }
-    std::cout << std::endl;
-  }
-}
-
-std::string Puzzle::GetPuzzle() {
-    std::string puzzle = "";
-    for (int row = 0; row < kPuzzleSize; row++) {
-        for (int col = 0; col < kPuzzleSize; col++) {
-            puzzle += puzzle_[row][col];
-        }
-    }
-    return puzzle;
-}
-
-std::vector<std::string>& Puzzle::GetWordsVector() {
-  return words_vector_;
-}
-
-
-// Removes word from trie
-// To respect the original words that were inputted and not the combination of
-// words that can be generated from those words, we need to properly remove the
-// full word This means when working backwards finding the first split in the
-// trie in that branch and removing a word up until that split
-void Puzzle::RemoveWord(std::vector<char> word) {
-  // word is the full word we want to remove
-  // we need to work backwards and do a series of checks in the trie
-  // use IsFullWord to check if there are branches
-  while (word.size() != 0 &&
-         IsFullWord(this->words_trie_, word)) {  // while there are no branches
-    this->words_trie_.remove(word);              // remove that word
-    word.pop_back();  // remove last letter and check again for branches
-  }
-}
-
-void Puzzle::RemoveWord(Trie<char>& trie, std::vector<char> word) {
-  // word is the full word we want to remove
-  // we need to work backwards and do a series of checks in the trie
-  // use IsFullWord to check if there are branches
-  while (word.size() != 0 &&
-         IsFullWord(trie, word)) {  // while there are no branches
-    trie.remove(word);              // remove that word
-    word.pop_back();  // remove last letter and check again for branches
-  }
 }
 
 // --------- Methods for solving the puzzle  ---------
@@ -277,10 +164,9 @@ bool Puzzle::Solve(Puzzle& a_single_puzzle, int row, int col) {
   }
   // Move onto next square on grid
   std::tuple<int, int> next = FindNextCharacter(row, col);
-  if (Solve(a_single_puzzle, std::get<0>(next), std::get<1>(next)))
-    return true;  // all words are eventually found
-  return false;   // a word wasn't found at this square on grid
+  return Solve(a_single_puzzle, std::get<0>(next), std::get<1>(next));
 }
+
 // method to find next box in grid
 std::tuple<int, int> Puzzle::FindNextCharacter(int row, int col) {
   if (row <= kPuzzleSize - 1 && col < kPuzzleSize - 1) {
@@ -295,6 +181,7 @@ std::tuple<int, int> Puzzle::FindNextCharacter(int row, int col) {
   }
 }
 
+// Checks that there are no more longer words stored after this one
 bool Puzzle::IsFullWord(Trie<char>& trie, std::vector<char>& word) {
   for (char letter : alphabet) {
     word.push_back(toupper(letter));  // adds letter
@@ -549,5 +436,104 @@ bool Puzzle::CheckSouthEast(Puzzle& a_single_puzzle, int row, int col,
   characters.pop_back();
   // UndoRemoval(a_single_puzzle, row, col, characters);
   return false;  // this triggers back tracking
+}
+
+// --------- Methods to help with testing ---------
+void Puzzle::CreatePuzzleGrid(std::string& puzzle,
+                              char grid[kPuzzleSize][kPuzzleSize]) {
+  // Keeps track of the character in the puzzle
+  int char_counter = 0;
+  // iterates through 2d array
+  for (int row = 0; row < kPuzzleSize; row++) {
+    for (int column = 0; column < kPuzzleSize; column++) {
+      grid[row][column] = toupper(puzzle.at(char_counter));
+      char_counter++;
+    }
+  }
+}
+// Creates trie of words to be found in puzzle
+void Puzzle::CreateTrie(std::string& words, Trie<char>& words_trie) {
+  std::vector<std::string> words_list;
+  CreateWordListVector(words, words_list);  // add each word into trie
+  for (std::string word : words_list) {
+    // each word has a vector to it
+    // code derived from:
+    // https://www.techiedelight.com/convert-string-vector-chars-cpp/
+    std::vector<char> word_vec(word.begin(), word.end());
+    for (char c : word_vec) {
+      toupper(c);
+    }
+    words_trie.add(word_vec);
+    word_vec.clear();
+  }
+}
+
+// Pretty prints out solution
+void Puzzle::PrintSolution() {
+  for (auto& row : solution_) {
+    for (char col : row) {
+      std::cout << col << " ";
+    }
+    std::cout << std::endl;
+  }
+}
+
+std::string Puzzle::GetSolution() {
+  std::string solution;
+  for (auto& row : solution_) {
+    for (char col : row) {
+      solution += col;
+    }
+  }
+  return solution;
+}
+
+// Pretty prints out puzzle
+void Puzzle::PrintPuzzle() {
+  for (auto& row : puzzle_) {
+    for (char col : row) {
+      std::cout << col << " ";
+    }
+    std::cout << std::endl;
+  }
+}
+
+std::string Puzzle::GetPuzzle() {
+  std::string puzzle;
+  for (auto& row : puzzle_) {
+    for (char col : row) {
+      puzzle += col;
+    }
+  }
+  return puzzle;
+}
+
+std::vector<std::string>& Puzzle::GetWordsVector() { return words_vector_; }
+
+// Removes word from trie
+// To respect the original words that were inputted and not the combination of
+// words that can be generated from those words, we need to properly remove the
+// full word This means when working backwards finding the first split in the
+// trie in that branch and removing a word up until that split
+void Puzzle::RemoveWord(std::vector<char> word) {
+  // word is the full word we want to remove
+  // we need to work backwards and do a series of checks in the trie
+  // use IsFullWord to check if there are branches
+  while (!word.empty() &&
+         IsFullWord(this->words_trie_, word)) {  // while there are no branches
+    this->words_trie_.remove(word);              // remove that word
+    word.pop_back();  // remove last letter and check again for branches
+  }
+}
+
+void Puzzle::RemoveWord(Trie<char>& trie, std::vector<char> word) {
+  // word is the full word we want to remove
+  // we need to work backwards and do a series of checks in the trie
+  // use IsFullWord to check if there are branches
+  while (!word.empty() &&
+         IsFullWord(trie, word)) {  // while there are no branches
+    trie.remove(word);              // remove that word
+    word.pop_back();  // remove last letter and check again for branches
+  }
 }
 }  // namespace wordsearch
