@@ -21,6 +21,9 @@ using std::string;
 namespace myapp {
 // Monospaced san serif font for easy readability
 const char kNormalFont[] = "Helvetica";
+std::string file_name_ =
+    "/Users/white/Cinder/my-projects/final-project-jhli3/data/"
+    "wordsearch3.spf";
 
 using cinder::app::KeyEvent;
 
@@ -84,7 +87,7 @@ void MyApp::PrintText(const string& text, const cinder::Color& color,
 }
 
 // Wrapper method for printing error messages
-void MyApp::Print(std::string text) {
+void MyApp::Print(const std::string& text) {
   // Setting some variable to print the text
   const Color color = Color::white();
   const cinder::vec2 center = getWindowCenter();
@@ -179,10 +182,7 @@ void MyApp::DrawWordBank() {
 // Create and Solve wordsearch
 void MyApp::RunSolver() {
   wordsearch::Parser parser;
-  std::string file_name =
-      "/Users/white/Cinder/my-projects/final-project-jhli3/data/"
-      "wordsearch3.spf";
-  if (parser.ParseFile(file_name)) {  // if file parsing is sucessful
+  if (parser.ParseFile(file_name_)) {  // if file parsing is sucessful
     IsValidFile_ = true;
     wordsearch::Puzzle my_puzzle = parser.GetPuzzle();  // create puzzle
     if (my_puzzle.Solve(

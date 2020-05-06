@@ -23,7 +23,7 @@ class MyApp : public cinder::app::App {
   void PrintText(const std::string& text, const cinder::Color& color, const cinder::ivec2& size,
                  const cinder::vec2& loc);
   // Wrapper function for simply printing text in terminal
-  void Print(std::string text);
+  void Print(const std::string& text);
   // Creates puzzle from file and solves puzzle
   void RunSolver();
   // Draws puzzle in terminal
