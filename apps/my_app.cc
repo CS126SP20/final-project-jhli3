@@ -42,8 +42,10 @@ void MyApp::update() {}
 
 void MyApp::draw() {
   cinder::gl::clear();
+  std::string error_message; // error message for when something goes wrong
   if (!IsValidFile_) {  // if file is invalid
-    Print("Invalid puzzle file.");
+    error_message = fmt::format("Error: {}", "Invalid puzzle file");
+    Print(error_message);
   } else if (IsSolutionFound_) {  // if a solution is found display it
     if (ShowSolution_) {          // If toggled draw solution grid
       DrawSolution();
@@ -52,7 +54,8 @@ void MyApp::draw() {
     }
     DrawWordBank();
   } else {  // display error message that solution wasn't found
-    Print("Solution not found.");
+    error_message = fmt::format("Error: {}", "Solution not found");
+    Print(error_message);
   }
 }
 

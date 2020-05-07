@@ -22,6 +22,6 @@ Some important notes
 To solve the puzzle go into my_app.cc and change the file_name_ to the name of your puzzle file. Then run the program. The Cinder terminal will default show just the puzzle and word bank. Press return to view the solutions or to revert back to the puzzle.
 
 ### External Library
-For this program I imported an external [trie header library](https://github.com/KnairdA/Trie) to save time on making my own template. 
+For this program I imported an external [trie header library](https://github.com/KnairdA/Trie) to save time on making my own template. I also used the [{fmt}](https://fmt.dev/6.2.0/index.html) formatting library to help format some text in the Cinder terminal display.
 
 ---
